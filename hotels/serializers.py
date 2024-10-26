@@ -35,7 +35,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         # Aggiungi ulteriori informazioni al payload del token
-        token['name'] = user.first_name
+        token['firstname'] = user.first_name
         token['lastname'] = user.last_name
         token['email'] = user.email
         token['superuser'] = user.is_superuser  # Assumendo che il modello utente abbia un campo 'role'

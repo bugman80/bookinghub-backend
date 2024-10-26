@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import client from '../axios';
 import { getHotels, getServices } from '../api';
+import { getUserData } from '../utils'
 
 const Hotels = () => {
 
@@ -25,8 +26,7 @@ const Hotels = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [active, setActive] = useState(false);
 
-  const is_superuser = localStorage.getItem('access').is_superuser;
-  console.log
+  const is_superuser = getUserData().superuser;
 
   const fetchHotels = async () => {
     try {
@@ -313,20 +313,22 @@ const Hotels = () => {
                   />
                 </div>
               )}
-              <div className="flex space-x-4">
-                <button
-                  onClick={() => startEditHotel(hotel)}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => deleteHotel(hotel.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </div>
+              {is_superuser && (
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => startEditHotel(hotel)}
+                    className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deleteHotel(hotel.id)}
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
