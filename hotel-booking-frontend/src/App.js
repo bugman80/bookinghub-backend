@@ -6,6 +6,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import Hotels from './pages/Hotels';
 import Bookings from './pages/Bookings';
+import Services from './pages/Services';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/login" element={<Login/>} />
             <Route path="/" element={<Home />} />
             <Route path="/hotels" element={<PrivateRoute element={Hotels} />} />
+            <Route path="/services" element={<PrivateRoute element={Services} />} />
             <Route path="/bookings" element={<PrivateRoute element={Bookings} />} />
           </Routes>
         </div>

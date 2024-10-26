@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom'; // Importa Link da React Router
 import client from '../axios';
+import { getUserData } from '../utils';
 
 const Navbar = () => {
     const location = useLocation(); // Ottieni la route attuale
     const isAuthenticated = !!localStorage.getItem('access');
+    const is_superuser = getUserData().superuser;
+
     const navigate = useNavigate();
 
     const restart_session = () => {
@@ -16,6 +19,8 @@ const Navbar = () => {
     const handleLogout = async () => {
       const access = localStorage.getItem('access');
       const refresh = localStorage.getItem('refresh');
+      console.log(access);
+      console.log(refresh);
       if (access && refresh) {
         try {
           await client.post('/api/logout/', {"refresh": refresh});
@@ -43,26 +48,36 @@ const Navbar = () => {
             >
               Home
             </Link>
-            {isAuthenticated &&
-            <Link
-              to="/hotels"
-              className={`${
-                location.pathname === '/hotels' ? 'text-blue-600' : 'text-gray-700'
-              } hover:text-blue-600`}
-            >
-              Hotels
-            </Link>
-            }
-            {isAuthenticated &&
-            <Link
-              to="/bookings"
-              className={`${
-                location.pathname === '/bookings' ? 'text-blue-600' : 'text-gray-700'
-              } hover:text-blue-600`}
-            >
-              Bookings
-            </Link>
-             }
+            {isAuthenticated && (
+              <Link
+                to="/hotels"
+                className={`${
+                  location.pathname === '/hotels' ? 'text-blue-600' : 'text-gray-700'
+                } hover:text-blue-600`}
+              >
+                Hotels
+              </Link>
+            )}
+            {isAuthenticated && is_superuser && (
+              <Link
+                to="/services"
+                className={`${
+                  location.pathname === '/services' ? 'text-blue-600' : 'text-gray-700'
+                } hover:text-blue-600`}
+              >
+                Services
+              </Link>
+            )}
+            {isAuthenticated && (
+              <Link
+                to="/bookings"
+                className={`${
+                  location.pathname === '/bookings' ? 'text-blue-600' : 'text-gray-700'
+                } hover:text-blue-600`}
+              >
+                Bookings
+              </Link>
+            )}
             {isAuthenticated ? (
                 <Link 
                     to="#"

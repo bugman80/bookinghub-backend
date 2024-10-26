@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import client from '../axios';
+import { getBookings, getHotels } from '../api';
 
 const Bookings = () => {
   const clean_form = { hotel: '', check_in: '', check_out: '', guests: '', total_price: 0 };
@@ -13,8 +14,8 @@ const Bookings = () => {
   // Funzione per recuperare la lista di bookings
   const fetchBookings = async () => {
     try {
-      const response = await client.get('/api/bookings/');
-      setBookings(response.data);
+      const data = await getBookings();
+      setBookings(data);
     } catch (error) {
       console.error('Error fetching bookings:', error);
     }
@@ -23,8 +24,8 @@ const Bookings = () => {
   // Funzione per recuperare la lista di hotel
   const fetchHotels = async () => {
     try {
-      const response = await client.get('/api/hotels/');
-      setHotels(response.data);
+      const data = await getHotels();
+      setHotels(data);
     } catch (error) {
       console.error('Error fetching hotels:', error);
     }
