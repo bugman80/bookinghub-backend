@@ -66,7 +66,7 @@ const Bookings = () => {
         setBookings([...bookings, response.data]); // Aggiungi la nuova prenotazione alla lista
         setBookingForm(clean_form); // Reset del form
       } catch (error) {
-        console.error('Error creating booking:', error);
+        setErrors(error.response.data);
       }
     }
   };

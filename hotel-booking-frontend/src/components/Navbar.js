@@ -39,7 +39,7 @@ const Navbar = () => {
       <nav className="bg-white shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="text-2xl font-bold text-blue-600">
-            <Link to="/">MyHotel</Link>
+            <Link to="/">Prenotiamo</Link>
           </div>
           <div className="hidden md:flex space-x-6">
             <Link

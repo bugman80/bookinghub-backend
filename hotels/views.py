@@ -8,8 +8,6 @@ from .serializers import HotelSerializer, ServiceSerializer, BookingSerializer, 
 
 # View per la gestione degli Hotels
 class HotelViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
 
@@ -35,7 +33,7 @@ class LogoutView(APIView):
             refresh = request.data.get('refresh')
             if not refresh:
                 return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
-            # Blacklist the token
+            # metto il token nella blacklist
             token = RefreshToken(refresh)
             token.blacklist()
             return Response(status=status.HTTP_205_RESET_CONTENT)

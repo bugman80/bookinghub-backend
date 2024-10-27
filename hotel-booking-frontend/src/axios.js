@@ -36,7 +36,6 @@ client.interceptors.response.use(
     response => response,
     async error => {
         const originalRequest = error.config;
-        console.log("DENTRO");
         if (error.response && (error.response.status === 401 || error.response.status === 403) && !originalRequest._retry) {
             originalRequest._retry = true; // Evita cicli infiniti
 

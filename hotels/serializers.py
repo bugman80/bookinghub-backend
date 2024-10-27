@@ -32,6 +32,11 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = '__all__'
+    
+    def validate(self, data):
+        if data['check_out'] <= data['check_in']:
+            raise serializers.ValidationError({'check_out': 'La data di partenza deve essere successiva alla data di arrivo.'})
+        return data
 
 # Serializzatore dei token jwt
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

@@ -92,13 +92,6 @@ class Booking(models.Model):
     def nights(self):
         return (self.check_out - self.check_in).days
     
-    def clean(self):
-        print(self.check_out)
-        print(self.check_in)
-        if self.check_out <= self.check_in:
-            print("ERROREEEEEEEE")
-            raise ValidationError("La data di check-out deve essere successiva alla data di check-in.")
-        
     def save(self, *args, **kwargs):
         self.total_price = self.nights * self.hotel.price_per_night
         super().save(*args, **kwargs)
