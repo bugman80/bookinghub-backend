@@ -10,6 +10,7 @@ const Bookings = () => {
   const [bookingForm, setBookingForm] = useState(clean_form);
   const [isEditing, setIsEditing] = useState(false);
   const [editBookingId, setEditBookingId] = useState(null);
+  const [errors, setErrors] = useState({});
 
   // Funzione per recuperare la lista di bookings
   const fetchBookings = async () => {
@@ -37,14 +38,35 @@ const Bookings = () => {
     fetchHotels();
   }, []);
 
+  const validate = () => {
+    const errors = {};
+
+    if (!bookingForm.hotel) {
+      errors.hotel = 'Hotel obbligatorio';
+    }
+    if (!bookingForm.check_in) {
+      errors.check_in = 'Check-in obbligatorio';
+    }
+    if (!bookingForm.check_out) {
+      errors.check_out = 'Check-out obbligatorio';
+    }
+    if (!bookingForm.guests) {
+      errors.guests = 'Numero ospiti obbligatorio';
+    }
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   // Funzione per creare una nuova prenotazione
   const createBooking = async () => {
-    try {
-      const response = await client.post('/api/bookings/', bookingForm);
-      setBookings([...bookings, response.data]); // Aggiungi la nuova prenotazione alla lista
-      setBookingForm(clean_form); // Reset del form
-    } catch (error) {
-      console.error('Error creating booking:', error);
+    if(validate()){
+      try {
+        const response = await client.post('/api/bookings/', bookingForm);
+        setBookings([...bookings, response.data]); // Aggiungi la nuova prenotazione alla lista
+        setBookingForm(clean_form); // Reset del form
+      } catch (error) {
+        console.error('Error creating booking:', error);
+      }
     }
   };
 
@@ -73,14 +95,16 @@ const Bookings = () => {
 
   // Funzione per aggiornare una prenotazione esistente
   const updateBooking = async () => {
-    try {
-      const response = await client.put(`/api/bookings/${editBookingId}/`, bookingForm);
-      setBookings(bookings.map((booking) => (booking.id === editBookingId ? response.data : booking))); // Aggiorna la lista
-      setBookingForm(clean_form); // Reset del form
-      setIsEditing(false); // Esci dalla modalità di modifica
-      setEditBookingId(null);
-    } catch (error) {
-      console.error('Error updating booking:', error);
+    if(validate()){
+      try {
+        const response = await client.put(`/api/bookings/${editBookingId}/`, bookingForm);
+        setBookings(bookings.map((booking) => (booking.id === editBookingId ? response.data : booking))); // Aggiorna la lista
+        setBookingForm(clean_form); // Reset del form
+        setIsEditing(false); // Esci dalla modalità di modifica
+        setEditBookingId(null);
+      } catch (error) {
+        console.error('Error updating booking:', error);
+      }
     }
   };
 
@@ -103,6 +127,7 @@ const Bookings = () => {
               </option>
             ))}
           </select>
+          {errors.hotel && <p style={{ color: 'red' }}>{errors.hotel}</p>}
           <input
             type="date"
             placeholder="Check-in Date"
@@ -110,6 +135,7 @@ const Bookings = () => {
             onChange={(e) => setBookingForm({ ...bookingForm, check_in: e.target.value })}
             className="border p-2 w-full"
           />
+          {errors.check_in && <p style={{ color: 'red' }}>{errors.check_in}</p>}
           <input
             type="date"
             placeholder="Check-out Date"
@@ -117,6 +143,7 @@ const Bookings = () => {
             onChange={(e) => setBookingForm({ ...bookingForm, check_out: e.target.value })}
             className="border p-2 w-full"
           />
+          {errors.check_out && <p style={{ color: 'red' }}>{errors.check_out}</p>}
           <input
             type="number"
             placeholder="Guests"
@@ -124,6 +151,7 @@ const Bookings = () => {
             onChange={(e) => setBookingForm({ ...bookingForm, guests: e.target.value })}
             className="border p-2 w-full"
           />
+          {errors.guests && <p style={{ color: 'red' }}>{errors.guests}</p>}
           <button
             onClick={isEditing ? updateBooking : createBooking}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"

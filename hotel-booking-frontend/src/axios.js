@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 // Crea un'istanza di Axios
 const client = axios.create({
@@ -45,6 +46,9 @@ client.interceptors.response.use(
                 // Aggiorna l'access token e riprova la richiesta originale
                 originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                 return client(originalRequest);
+            } else {
+                const navigate = useNavigate();
+                navigate('/login');
             }
         }
         

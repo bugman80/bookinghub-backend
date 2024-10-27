@@ -19,12 +19,13 @@ const Hotels = () => {
   const [email, setEmail] = useState("");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
-  const [rooms, setRooms] = useState(0);
-  const [price, setPrice] = useState(0);
+  const [rooms, setRooms] = useState("");
+  const [price, setPrice] = useState("");
   const [selectedServices, setSelectedServices] = useState([]);
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [active, setActive] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const is_superuser = getUserData().superuser;
 
@@ -108,15 +109,57 @@ const Hotels = () => {
     return formData;
   }
 
+  const validate = () => {
+    const errors = {};
+
+    if (!name) {
+      errors.name = 'Nome obbligatorio';
+    }
+    if (!description) {
+      errors.description = 'Descrizione obbligatoria';
+    }
+    if (!address) {
+      errors.address = 'Indirizzo obbligatorio';
+    }
+    if (!phone) {
+      errors.phone_number = 'Telefono obbligatorio';
+    }
+    if (!email) {
+      errors.email = 'Email obbligatoria';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = 'Email non valida';
+    }
+    if (!city) {
+      errors.city = 'Citta\' obbligatoria';
+    }
+    if (!country) {
+      errors.country = 'Paese obbligatorio';
+    }
+    if (!rooms) {
+      errors.total_rooms = 'Numero di camere obbligatorio';
+    }
+    if (!price) {
+      errors.price_per_night = 'Prezzo per notte obbligatorio';
+    }
+    if (!image && !imageUrl) {
+      errors.image = 'Immagine obbligatoria';
+    }
+    
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   // Funzione per creare un nuovo hotel
   const createHotel = async () => {
-    try {
-      const formData = populateForm();
-      const response = await client.post('/api/hotels/', formData);
-      setHotels([...hotels, response.data]); // Aggiungi l'hotel alla lista
-      cleanForm();
-    } catch (error) {
-      console.error('Error creating hotel:', error);
+    if(validate()){
+      try {
+        const formData = populateForm();
+        const response = await client.post('/api/hotels/', formData);
+        setHotels([...hotels, response.data]); // Aggiungi l'hotel alla lista
+        cleanForm();
+      } catch (error) {
+        console.error('Error creating hotel:', error);
+      }
     }
   };
 
@@ -140,8 +183,8 @@ const Hotels = () => {
     setEmail(hotel.email || "");
     setCity(hotel.city || "");
     setCountry(hotel.country || "");
-    setRooms(hotel.total_rooms || 0);
-    setPrice(hotel.price_per_night || 0);
+    setRooms(hotel.total_rooms || "");
+    setPrice(hotel.price_per_night || "");
     setSelectedServices(hotel.services || []);
     setImageUrl(hotel.image);
     setActive(hotel.is_active);
@@ -152,15 +195,17 @@ const Hotels = () => {
 
   // Funzione per aggiornare un hotel esistente
   const updateHotel = async () => {
-    try {
-      const formData = populateForm();
-      const response = await client.put(`/api/hotels/${hotelId}/`, formData);
-      setHotels(hotels.map((hotel) => (hotel.id === hotelId ? response.data : hotel))); // Aggiorna la lista
-      setIsEditing(false); // Esci dalla modalità di modifica
-      setHotelId(null);
-      cleanForm();
-    } catch (error) {
-      console.error('Error updating hotel:', error);
+    if(validate()){
+      try {
+        const formData = populateForm();
+        const response = await client.put(`/api/hotels/${hotelId}/`, formData);
+        setHotels(hotels.map((hotel) => (hotel.id === hotelId ? response.data : hotel))); // Aggiorna la lista
+        setIsEditing(false); // Esci dalla modalità di modifica
+        setHotelId(null);
+        cleanForm();
+      } catch (error) {
+        console.error('Error updating hotel:', error);
+      }
     }
   };
 
@@ -178,6 +223,7 @@ const Hotels = () => {
             onChange={(e) => setName(e.target.value)}
             className="border p-2 w-full"
           />
+          {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
           <input
             type="text"
             placeholder="Description"
@@ -185,6 +231,7 @@ const Hotels = () => {
             onChange={(e) => setDescription(e.target.value)}
             className="border p-2 w-full"
           />
+          {errors.description && <p style={{ color: 'red' }}>{errors.description}</p>}
           <input
             type="text"
             placeholder="Address"
@@ -192,6 +239,7 @@ const Hotels = () => {
             onChange={(e) => setAddress(e.target.value)}
             className="border p-2 w-full"
           />
+          {errors.address && <p style={{ color: 'red' }}>{errors.address}</p>}
           <input
             type="text"
             placeholder="Phone Number"
@@ -199,6 +247,7 @@ const Hotels = () => {
             onChange={(e) => setPhone(e.target.value)}
             className="border p-2 w-full"
           />
+          {errors.phone_number && <p style={{ color: 'red' }}>{errors.phone_number}</p>}
           <input
             type="email"
             placeholder="Email"
@@ -206,6 +255,7 @@ const Hotels = () => {
             onChange={(e) => setEmail(e.target.value)}
             className="border p-2 w-full"
           />
+          {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
           <input
             type="text"
             placeholder="City"
@@ -213,6 +263,7 @@ const Hotels = () => {
             onChange={(e) => setCity(e.target.value)}
             className="border p-2 w-full"
           />
+          {errors.city && <p style={{ color: 'red' }}>{errors.city}</p>}
           <input
             type="text"
             placeholder="Country"
@@ -220,6 +271,7 @@ const Hotels = () => {
             onChange={(e) => setCountry(e.target.value)}
             className="border p-2 w-full"
           />
+          {errors.country && <p style={{ color: 'red' }}>{errors.country}</p>}
           <input
             type="number"
             placeholder="Rooms"
@@ -227,6 +279,7 @@ const Hotels = () => {
             onChange={(e) => setRooms(e.target.value)}
             className="border p-2 w-full"
           />
+          {errors.total_rooms && <p style={{ color: 'red' }}>{errors.total_rooms}</p>}
           <input
             type="number"
             placeholder="Price per night"
@@ -234,6 +287,7 @@ const Hotels = () => {
             onChange={(e) => setPrice(e.target.value)}
             className="border p-2 w-full"
           />
+          {errors.price_per_night && <p style={{ color: 'red' }}>{errors.price_per_night}</p>}
           {services.map(service => (
             <div key={service.id} className="flex items-center mb-2">
               <input
@@ -267,6 +321,7 @@ const Hotels = () => {
               className="block w-full text-sm text-gray-900 cursor-pointer focus:outline-none"
             />
           </div>
+          {errors.image && <p style={{ color: 'red' }}>{errors.image}</p>}
           <div className="space-y-2">
               <input
                 type="checkbox"

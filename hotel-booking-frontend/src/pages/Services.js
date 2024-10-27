@@ -9,6 +9,7 @@ const Services = () => {
   const [serviceForm, setServiceForm] = useState(clean_form);
   const [isEditing, setIsEditing] = useState(false);
   const [editServiceId, setEditServiceId] = useState(null);
+  const [errors, setErrors] = useState({});
 
   // Funzione per recuperare la lista di services
   const fetchServices = async () => {
@@ -24,13 +25,29 @@ const Services = () => {
     fetchServices();
   }, []);
 
+  const validate = () => {
+    const errors = {};
+
+    if (!serviceForm.name) {
+      errors.name = 'Nome obbligatorio';
+    }
+    if (!serviceForm.description) {
+      errors.description = 'Descrizione obbligatoria';
+    }
+    
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const createService = async () => {
-    try {
-      const response = await client.post('/api/services/', serviceForm);
-      setServices([...services, response.data]); // Aggiungi la nuova prenotazione alla lista
-      setServiceForm(clean_form); // Reset del form
-    } catch (error) {
-      console.error('Error creating service:', error);
+    if(validate()){
+      try {
+        const response = await client.post('/api/services/', serviceForm);
+        setServices([...services, response.data]); // Aggiungi la nuova prenotazione alla lista
+        setServiceForm(clean_form); // Reset del form
+      } catch (error) {
+        console.error('Error creating service:', error);
+      }
     }
   };
 
@@ -53,14 +70,16 @@ const Services = () => {
   };
 
   const updateService = async () => {
-    try {
-      const response = await client.put(`/api/services/${editServiceId}/`, serviceForm);
-      setServices(services.map((service) => (service.id === editServiceId ? response.data : service))); // Aggiorna la lista
-      setServiceForm(clean_form); // Reset del form
-      setIsEditing(false); // Esci dalla modalità di modifica
-      setEditServiceId(null);
-    } catch (error) {
-      console.error('Error updating service:', error);
+    if(validate()){
+      try {
+        const response = await client.put(`/api/services/${editServiceId}/`, serviceForm);
+        setServices(services.map((service) => (service.id === editServiceId ? response.data : service))); // Aggiorna la lista
+        setServiceForm(clean_form); // Reset del form
+        setIsEditing(false); // Esci dalla modalità di modifica
+        setEditServiceId(null);
+      } catch (error) {
+        console.error('Error updating service:', error);
+      }
     }
   };
 
@@ -78,6 +97,7 @@ const Services = () => {
             onChange={(e) => setServiceForm({ ...serviceForm, name: e.target.value })}
             className="border p-2 w-full"
           />
+          {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
           <input
             type="text"
             placeholder="Description"
@@ -85,6 +105,7 @@ const Services = () => {
             onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
             className="border p-2 w-full"
           />
+          {errors.description && <p style={{ color: 'red' }}>{errors.description}</p>}
           <button
             onClick={isEditing ? updateService : createService}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
