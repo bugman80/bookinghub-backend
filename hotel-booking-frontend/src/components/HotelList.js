@@ -6,6 +6,7 @@ const HotelList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Recupero la lista degli hotels
   useEffect(() => {
     const fetchHotels = async () => {
       try {

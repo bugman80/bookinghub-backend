@@ -12,7 +12,7 @@ const Bookings = () => {
   const [editBookingId, setEditBookingId] = useState(null);
   const [errors, setErrors] = useState({});
 
-  // Funzione per recuperare la lista di bookings
+  // Funzione per recuperare la lista delle prenotazioni
   const fetchBookings = async () => {
     try {
       const data = await getBookings();
@@ -22,7 +22,7 @@ const Bookings = () => {
     }
   };
 
-  // Funzione per recuperare la lista di hotel
+  // Funzione per recuperare la lista degli hotels
   const fetchHotels = async () => {
     try {
       const data = await getHotels();
@@ -38,6 +38,7 @@ const Bookings = () => {
     fetchHotels();
   }, []);
 
+  // Funzione per validare il form prima dell'invio
   const validate = () => {
     const errors = {};
 
@@ -110,17 +111,17 @@ const Bookings = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Bookings</h1>
+      <h1 className="text-3xl font-bold mb-6">Prenotazioni</h1>
 
       <div className="mb-6 p-6 bg-gray-100 shadow-md rounded-lg">
-        <h2 className="text-xl font-semibold">{isEditing ? 'Edit Booking' : 'Add New Booking'}</h2>
+        <h2 className="text-xl font-semibold">{isEditing ? 'Modifica Prenotazione' : 'Aggiungi Prenotazione'}</h2>
         <div className="space-y-4 mt-4">
           <select
             value={bookingForm.hotel}
             onChange={(e) => setBookingForm({ ...bookingForm, hotel: e.target.value })}
             className="border p-2 w-full"
           >
-            <option value="">Select Hotel</option>
+            <option value="">Scegli l'Hotel</option>
             {hotels.map((hotel) => (
               <option key={hotel.id} value={hotel.id}>
                 {hotel.name}
@@ -130,7 +131,7 @@ const Bookings = () => {
           {errors.hotel && <p style={{ color: 'red' }}>{errors.hotel}</p>}
           <input
             type="date"
-            placeholder="Check-in Date"
+            placeholder="Data di Arrivo"
             value={bookingForm.check_in}
             onChange={(e) => setBookingForm({ ...bookingForm, check_in: e.target.value })}
             className="border p-2 w-full"
@@ -138,7 +139,7 @@ const Bookings = () => {
           {errors.check_in && <p style={{ color: 'red' }}>{errors.check_in}</p>}
           <input
             type="date"
-            placeholder="Check-out Date"
+            placeholder="Data di Partenza"
             value={bookingForm.check_out}
             onChange={(e) => setBookingForm({ ...bookingForm, check_out: e.target.value })}
             className="border p-2 w-full"
@@ -146,7 +147,7 @@ const Bookings = () => {
           {errors.check_out && <p style={{ color: 'red' }}>{errors.check_out}</p>}
           <input
             type="number"
-            placeholder="Guests"
+            placeholder="Numero di Ospiti"
             value={bookingForm.guests}
             onChange={(e) => setBookingForm({ ...bookingForm, guests: e.target.value })}
             className="border p-2 w-full"
@@ -156,14 +157,14 @@ const Bookings = () => {
             onClick={isEditing ? updateBooking : createBooking}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
-            {isEditing ? 'Update Booking' : 'Create Booking'}
+            {isEditing ? 'Modifica' : 'Aggiungi'}
           </button>
         </div>
       </div>
 
       {/* Lista delle prenotazioni */}
       {bookings.length === 0 ? (
-        <p className="text-gray-600">No bookings available.</p>
+        <p className="text-gray-600">Nessuna Prenotazione.</p>
       ) : (
         <div className="space-y-6">
           {bookings.map((booking) => (
@@ -174,23 +175,23 @@ const Bookings = () => {
               <div>
                 <h2 className="text-xl font-semibold text-blue-600">{hotels.find(hotel => hotel.id === booking.hotel) && hotels.find(hotel => hotel.id === booking.hotel).name}</h2>
                 <p className="text-gray-700">
-                  Check-in: {booking.check_in} | Check-out: {booking.check_out}
+                  Arrivo: {booking.check_in} | Partenza: {booking.check_out}
                 </p>
-                <p className="text-gray-700">Guests: {booking.guests}</p>
-                <p className="text-gray-700">Total Price: {booking.total_price}</p>
+                <p className="text-gray-700">Ospiti: {booking.guests}</p>
+                <p className="text-gray-700">Prezzo: {booking.total_price}</p>
               </div>
               <div className="flex space-x-4">
                 <button
                   onClick={() => startEditBooking(booking)}
                   className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
                 >
-                  Edit
+                  Modifica
                 </button>
                 <button
                   onClick={() => deleteBooking(booking.id)}
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                 >
-                  Delete
+                  Elimina
                 </button>
               </div>
             </div>

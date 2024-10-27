@@ -8,11 +8,13 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  // Funzione per settare le credenziali utente
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials({ ...credentials, [name]: value });
   };
 
+  // Funzione per inviare i dati di accesso e recuperare i tokens
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -28,7 +30,7 @@ const Login = () => {
   return (
     <div className="flex justify-center items-center h-screen">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-1/3">
-        <h2 className="text-2xl mb-6">Login</h2>
+        <h2 className="text-2xl mb-6">Entra</h2>
         {error && <p className="text-red-500">{error}</p>}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2" htmlFor="username">
@@ -60,7 +62,7 @@ const Login = () => {
           type="submit"
           className="bg-blue-500 text-white rounded w-full py-2 hover:bg-blue-600"
         >
-          Login
+          Invia
         </button>
       </form>
     </div>

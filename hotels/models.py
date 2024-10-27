@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
-
+# Modello per la gestione degli Hotels
 class Hotel(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -27,7 +27,7 @@ class Hotel(models.Model):
     def __str__(self):
         return self.name
 
-
+# Modello per la gestione dei Servizi
 class Service(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -40,7 +40,7 @@ class Service(models.Model):
         verbose_name = "Service"
         verbose_name_plural = "Services"
 
-
+# Modello per la gestione delle prenotazioni
 class Booking(models.Model):
     # Riferimento all'hotel prenotato (relazione many-to-one)
     hotel = models.ForeignKey('Hotel', on_delete=models.CASCADE, related_name='bookings')

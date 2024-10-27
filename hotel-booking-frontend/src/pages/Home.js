@@ -1,5 +1,5 @@
 import React from 'react';
-import { getUserData } from '../utils'
+import { getUserData } from '../api'
 
 const Home = () => {
 

@@ -2,11 +2,13 @@ from rest_framework import serializers
 from .models import Hotel, Service, Booking
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+# Serializzatore dei servizi
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = '__all__'
 
+# Serializzatore degli hotels
 class HotelSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
 
@@ -20,24 +22,26 @@ class HotelSerializer(serializers.ModelSerializer):
         return None
     
     def update(self, instance, validated_data):
-        # Remove the 'image' field if it's not present in the update request
+        # Rimuove il campo immagine se non presente nei dati inviati (per esempio in caso di modifica di altri dati)
         if 'image' not in validated_data:
             validated_data.pop('image', None)
         return super().update(instance, validated_data)
 
+# Serializzatore delle prenotazioni
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = '__all__'
 
+# Serializzatore dei token jwt
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Aggiungi ulteriori informazioni al payload del token
+        # Aggiungo ulteriori informazioni (non sensibili) al payload del token
         token['firstname'] = user.first_name
         token['lastname'] = user.last_name
         token['email'] = user.email
-        token['superuser'] = user.is_superuser  # Assumendo che il modello utente abbia un campo 'role'
+        token['superuser'] = user.is_superuser
 
         return token

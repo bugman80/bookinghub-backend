@@ -1,4 +1,5 @@
 import client from './axios';
+import { jwtDecode } from 'jwt-decode';
 
 // Imposta l'endpoint API di base
 const API_URL = '/api/';
@@ -14,6 +15,7 @@ export const getHotels = async () => {
   }
 };
 
+// Funzione per ottenere la lista dei servizi
 export const getServices = async () => {
   try {
     const response = await client.get(`${API_URL}services/`);
@@ -24,6 +26,7 @@ export const getServices = async () => {
   }
 };
 
+// Funzione per ottenere la lista dei bookings
 export const getBookings = async () => {
   try {
     const response = await client.get(`${API_URL}bookings/`);
@@ -54,4 +57,19 @@ export const createBooking = async (bookingData) => {
     console.error('Errore durante la creazione della prenotazione', error);
     throw error;
   }
+};
+
+// Funzione per ottenere i dati utente dal token
+export const getUserData = () => {
+  const token = localStorage.getItem("access");
+  const decodedToken = token ? jwtDecode(token) : null;
+  console.log(decodedToken)
+  const userData = {
+      id: decodedToken?.id,
+      email: decodedToken?.email,
+      firstname: decodedToken?.firstname,
+      lastname: decodedToken?.lastname,
+      superuser: decodedToken?.superuser
+  };
+  return userData;
 };

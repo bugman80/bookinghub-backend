@@ -8,6 +8,7 @@ const BookingDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Recupero la lista delle prenotazioni
   useEffect(() => {
     const fetchBooking = async () => {
       try {

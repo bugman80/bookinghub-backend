@@ -6,24 +6,28 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Hotel, Service, Booking
 from .serializers import HotelSerializer, ServiceSerializer, BookingSerializer, CustomTokenObtainPairSerializer
 
-
+# View per la gestione degli Hotels
 class HotelViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
 
+# View per la gestione dei Servizi
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
 
+# View per la gestione delle Prenotazioni
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
 
+# View per la gestione dei Token
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
+# View per la gestione del logout
 class LogoutView(APIView):
     
     def post(self, request):

@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-// Crea un'istanza di Axios
+// Crea un'istanza di Axios e la configura per puntare al backend
 const client = axios.create({
-    baseURL: 'http://localhost:8000/', // Modifica con il tuo endpoint base
-    //headers: { 'Content-Type': 'application/json' }
+    baseURL: 'http://localhost:8000/',
 });
 
 // Funzione per gestire il refresh del token

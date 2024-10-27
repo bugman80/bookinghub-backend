@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom'; // Importa Link da React Router
 import client from '../axios';
-import { getUserData } from '../utils';
+import { getUserData } from '../api';
 
 const Navbar = () => {
     const location = useLocation(); // Ottieni la route attuale
@@ -10,12 +10,14 @@ const Navbar = () => {
 
     const navigate = useNavigate();
 
+    // Funzione per resettare la sessione utente
     const restart_session = () => {
       localStorage.removeItem('access');
       localStorage.removeItem('refresh');
       navigate('/login');
     }
 
+    // Funzione per eseguire il logout dell'utente
     const handleLogout = async () => {
       const access = localStorage.getItem('access');
       const refresh = localStorage.getItem('refresh');
@@ -65,7 +67,7 @@ const Navbar = () => {
                   location.pathname === '/services' ? 'text-blue-600' : 'text-gray-700'
                 } hover:text-blue-600`}
               >
-                Services
+                Servizi
               </Link>
             )}
             {isAuthenticated && (
@@ -75,7 +77,7 @@ const Navbar = () => {
                   location.pathname === '/bookings' ? 'text-blue-600' : 'text-gray-700'
                 } hover:text-blue-600`}
               >
-                Bookings
+                Prenotazioni
               </Link>
             )}
             {isAuthenticated ? (
@@ -86,7 +88,7 @@ const Navbar = () => {
                         location.pathname === '/logout' ? 'text-blue-600' : 'text-gray-700'
                     } hover:text-blue-600`}
                 >
-                    Logout
+                    Esci
                 </Link>
             ) : (
                 <Link 
@@ -95,7 +97,7 @@ const Navbar = () => {
                         location.pathname === '/login' ? 'text-blue-600' : 'text-gray-700'
                     } hover:text-blue-600`}
                 >
-                    Login
+                    Entra
                 </Link>
             )}
           </div>

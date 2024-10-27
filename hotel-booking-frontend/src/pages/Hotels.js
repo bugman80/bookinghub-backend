@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import client from '../axios';
-import { getHotels, getServices } from '../api';
-import { getUserData } from '../utils'
+import { getHotels, getServices, getUserData } from '../api';
 
 const Hotels = () => {
 
@@ -10,7 +9,6 @@ const Hotels = () => {
   const [hotels, setHotels] = useState([]);
   const [services, setServices] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  
   const [hotelId, setHotelId] = useState(null);  
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -29,6 +27,7 @@ const Hotels = () => {
 
   const is_superuser = getUserData().superuser;
 
+  // Carico gli hotels esistenti
   const fetchHotels = async () => {
     try {
       const data = await getHotels();
@@ -38,6 +37,7 @@ const Hotels = () => {
     }
   };
 
+  // Carico i servizi esistenti
   const fetchServices = async () => {
     try {
       const data = await getServices();
@@ -47,6 +47,7 @@ const Hotels = () => {
     }
   };
 
+  // Setta i servizi selezionati
   const handleServiceChange = (e) => {
     const serviceId = parseInt(e.target.value);
     if (e.target.checked) {
@@ -56,20 +57,23 @@ const Hotels = () => {
     }
   };
 
+  // Setta la nuova immagine selezionata
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]); // Setta la nuova immagine selezionata
+    setImage(e.target.files[0]);
   };
 
+  // Setta l'hotel ad attivo/inattivo
   const handleActiveChange = (e) => {
     setActive(e.target.checked);
   };
 
-  // Recupera gli hotel quando il componente viene montato
+  // Recupera gli hotel e i servizi quando il componente viene montato
   useEffect(() => {
     fetchHotels();
     fetchServices();
   }, []);
 
+  // Funzione per resettare il form
   const cleanForm = () => {
     setName("");
     setDescription("");
@@ -89,6 +93,7 @@ const Hotels = () => {
     setActive(false);
   };
 
+  // Funzione per popolare il form
   const populateForm = () => {
     const formData = new FormData();
     formData.append("id", hotelId);
@@ -109,6 +114,7 @@ const Hotels = () => {
     return formData;
   }
 
+  // Funzione per validare il form
   const validate = () => {
     const errors = {};
 
@@ -191,8 +197,6 @@ const Hotels = () => {
     setIsEditing(true);
   };
 
-  
-
   // Funzione per aggiornare un hotel esistente
   const updateHotel = async () => {
     if(validate()){
@@ -214,11 +218,11 @@ const Hotels = () => {
       <h1 className="text-3xl font-bold mb-6">Hotels</h1>
       {is_superuser && (
       <div className="mb-6 p-6 bg-gray-100 shadow-md rounded-lg">
-        <h2 className="text-xl font-semibold">{isEditing ? 'Edit Hotel' : 'Add New Hotel'}</h2>
+        <h2 className="text-xl font-semibold">{isEditing ? 'Modifica Hotel' : 'Aggiungi Hotel'}</h2>
         <div className="space-y-4 mt-4">
           <input
             type="text"
-            placeholder="Hotel Name"
+            placeholder="Nome"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="border p-2 w-full"
@@ -226,7 +230,7 @@ const Hotels = () => {
           {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
           <input
             type="text"
-            placeholder="Description"
+            placeholder="Descrizione"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="border p-2 w-full"
@@ -234,7 +238,7 @@ const Hotels = () => {
           {errors.description && <p style={{ color: 'red' }}>{errors.description}</p>}
           <input
             type="text"
-            placeholder="Address"
+            placeholder="Indirizzo"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             className="border p-2 w-full"
@@ -242,7 +246,7 @@ const Hotels = () => {
           {errors.address && <p style={{ color: 'red' }}>{errors.address}</p>}
           <input
             type="text"
-            placeholder="Phone Number"
+            placeholder="Telefono"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="border p-2 w-full"
@@ -258,7 +262,7 @@ const Hotels = () => {
           {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
           <input
             type="text"
-            placeholder="City"
+            placeholder="Citta'"
             value={city}
             onChange={(e) => setCity(e.target.value)}
             className="border p-2 w-full"
@@ -266,7 +270,7 @@ const Hotels = () => {
           {errors.city && <p style={{ color: 'red' }}>{errors.city}</p>}
           <input
             type="text"
-            placeholder="Country"
+            placeholder="Paese"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
             className="border p-2 w-full"
@@ -274,7 +278,7 @@ const Hotels = () => {
           {errors.country && <p style={{ color: 'red' }}>{errors.country}</p>}
           <input
             type="number"
-            placeholder="Rooms"
+            placeholder="Numero di Camere"
             value={rooms}
             onChange={(e) => setRooms(e.target.value)}
             className="border p-2 w-full"
@@ -282,7 +286,7 @@ const Hotels = () => {
           {errors.total_rooms && <p style={{ color: 'red' }}>{errors.total_rooms}</p>}
           <input
             type="number"
-            placeholder="Price per night"
+            placeholder="Prezzo per notte"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             className="border p-2 w-full"
@@ -303,7 +307,7 @@ const Hotels = () => {
           ))}
           {imageUrl && (
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Current Hotel Image</label>
+              <label className="block text-sm font-medium text-gray-700">Immagine dell'Hotel</label>
               <img
                 src={imageUrl}
                 alt="Hotel"
@@ -312,7 +316,7 @@ const Hotels = () => {
             </div>
           )}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Upload New Image</label>
+            <label className="block text-sm font-medium text-gray-700">Seleziona Immagine</label>
             <input
               type="file"
               ref={fileInputRef}
@@ -330,20 +334,20 @@ const Hotels = () => {
                 onChange={handleActiveChange}
                 className="mr-2"
               />
-              <label htmlFor="active" className="text-gray-700">Active</label>
+              <label htmlFor="active" className="text-gray-700">Attivo</label>
           </div>
           <button
             onClick={isEditing ? updateHotel : createHotel}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
-            {isEditing ? 'Update Hotel' : 'Create Hotel'}
+            {isEditing ? 'Modifica' : 'Aggiungi'}
           </button>
         </div>
       </div>
       )}
       {/* Lista degli hotel */}
       {hotels.length === 0 ? (
-        <p className="text-gray-600">No hotels available.</p>
+        <p className="text-gray-600">Nessun Hotel.</p>
       ) : (
         <div className="space-y-6">
           {hotels.map((hotel) => (
@@ -355,9 +359,9 @@ const Hotels = () => {
                 <h2 className="text-xl font-semibold text-blue-600">{hotel.name}</h2>
                 <p className="text-gray-700">{hotel.location}</p>
                 <p className="text-gray-700">{hotel.description}</p>
-                <p className="text-gray-700">Phone: {hotel.phone_number}</p>
+                <p className="text-gray-700">Telefono: {hotel.phone_number}</p>
                 <p className="text-gray-700">Email: {hotel.email}</p>
-                <p className="text-gray-700">Services: {hotel.services.map(id => services.find(service => service.id === id)).filter(service => service).map(service => service.name).join(', ')}</p>
+                <p className="text-gray-700">Servizi: {hotel.services.map(id => services.find(service => service.id === id)).filter(service => service).map(service => service.name).join(', ')}</p>
               </div>
               {hotel.image && (
                 <div className="flex space-x-4">
@@ -374,13 +378,13 @@ const Hotels = () => {
                     onClick={() => startEditHotel(hotel)}
                     className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
                   >
-                    Edit
+                    Modifica
                   </button>
                   <button
                     onClick={() => deleteHotel(hotel.id)}
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                   >
-                    Delete
+                    Elimina
                   </button>
                 </div>
               )}

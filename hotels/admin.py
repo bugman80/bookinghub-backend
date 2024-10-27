@@ -8,7 +8,7 @@ class HotelAdmin(admin.ModelAdmin):
     search_fields = ('name', 'city', 'country')
     list_filter = ('city', 'country', 'is_active')
 
-# Registrazione del modello Amenity
+# Registrazione del modello Service
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('name',)
