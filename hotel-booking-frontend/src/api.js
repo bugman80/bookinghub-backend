@@ -63,7 +63,6 @@ export const createBooking = async (bookingData) => {
 export const getUserData = () => {
   const token = localStorage.getItem("access");
   const decodedToken = token ? jwtDecode(token) : null;
-  console.log(decodedToken)
   const userData = {
       id: decodedToken?.id,
       email: decodedToken?.email,
