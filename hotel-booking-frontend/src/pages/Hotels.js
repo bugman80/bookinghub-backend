@@ -316,10 +316,11 @@ const Hotels = () => {
             </div>
           )}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Seleziona Immagine</label>
+            <label htmlFor="image" className="block text-sm font-medium text-gray-700">Seleziona Immagine</label>
             <input
               type="file"
               ref={fileInputRef}
+              id="image"
               name="image"
               onChange={handleImageChange}
               className="block w-full text-sm text-gray-900 cursor-pointer focus:outline-none"

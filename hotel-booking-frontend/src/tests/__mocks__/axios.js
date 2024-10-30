@@ -11,5 +11,6 @@ axios.interceptors = {
 // Mock delle funzioni get e post
 axios.get = jest.fn();
 axios.post = jest.fn();
+axios.delete = jest.fn();
 
 export default axios;
