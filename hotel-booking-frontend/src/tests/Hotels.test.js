@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from './__mocks__/axios'
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Hotels from '../pages/Hotels';
 import * as apis from '../api';
@@ -117,7 +117,8 @@ describe('Hotels', () => {
             {"id":1,"name":"wifi","description":"high speed wifi"}]};
         axios.get.mockResolvedValueOnce(mockServices);
 
-        const mockNewHotel = {"data": [{"id":3,"image_url":"/hotels/hotel3_F64SSWm.jpg","name":"Hotel Napoli","description":"Nel cuore di Napoli, il miglior hotel dove soggiornare","address":"Via Napoli 1","phone_number":"04-123456","email":"hotel.napoli@hotel.it","city":"Napoli","country":"Italia","total_rooms":40,"price_per_night":"80.00","image":"http://localhost:8000/hotels/hotel2_F64SSWm.jpg","is_active":true,"created_at":"2024-10-26T09:53:39.117428Z","updated_at":"2024-10-27T10:14:30.477351Z","services":[3,4,1]}]};
+        const hotelData = {"id":3,"image_url":"/hotels/hotel3_F64SSWm.jpg","name":"Hotel Napoli","description":"Nel cuore di Napoli, il miglior hotel dove soggiornare","address":"Via Napoli 1","phone_number":"04-123456","email":"hotel.napoli@hotel.it","city":"Napoli","country":"Italia","total_rooms":"40","price_per_night":"80.00","image":"http://localhost:8000/hotels/hotel2_F64SSWm.jpg","is_active":true,"created_at":"2024-10-26T09:53:39.117428Z","updated_at":"2024-10-27T10:14:30.477351Z","services":[3,4,1]};
+        const mockNewHotel = {"data": hotelData};
         axios.post.mockResolvedValueOnce(mockNewHotel);
     
         render(<Hotels />);
@@ -140,22 +141,25 @@ describe('Hotels', () => {
         const file = new File(['contenuto del file'], 'immagine.jpg', { type: 'image/jpeg' });
         userEvent.upload(fileInput, file);
 
-        userEvent.type(inputNome, 'Hotel Test');
-        userEvent.type(inputDescrizione, 'Creazione Hotel di test');
-        userEvent.type(inputIndirizzo, 'Via Test 2');
-        userEvent.type(inputTelefono, '1234567');
-        userEvent.type(inputEmail, 'test@test.it');
-        userEvent.type(inputCitta, 'Test');
-        userEvent.type(inputPaese, 'Test');
-        userEvent.type(inputCamere, '2');
-        userEvent.type(inputPrezzo, '0');
+        userEvent.type(inputNome, hotelData.name);
+        userEvent.type(inputDescrizione, hotelData.description);
+        userEvent.type(inputIndirizzo, hotelData.address);
+        userEvent.type(inputTelefono, hotelData.phone_number);
+        userEvent.type(inputEmail, hotelData.email);
+        userEvent.type(inputCitta, hotelData.city);
+        userEvent.type(inputPaese, hotelData.country);
+        userEvent.type(inputCamere, hotelData.total_rooms);
+        userEvent.type(inputPrezzo, hotelData.price_per_night);
 
         const aggiungiButtons = screen.getAllByRole('button', { name: 'Aggiungi' });
         expect(aggiungiButtons).toHaveLength(1);
         userEvent.click(aggiungiButtons[0]);
-
-        // Verifico che il nuovo hotel sia aggiunto alla lista
-        await waitFor(() => expect(screen.queryByText('Hotel Napoli')).not.toBeInTheDocument());
+        
+        //Verifico che venga visualizzato il pulsante di modifica nella lista degli hotels
+        await waitFor(() => expect(screen.queryByText('Hotel Napoli')).toBeInTheDocument());
+        const buttons = await waitFor(() => screen.getAllByRole('button', { name: 'Elimina' }));
+        //Mi aspetto due hotels in lista
+        expect(buttons).toHaveLength(3);
     });
     it('verifico la cancellazione di un hotel', async () => {
         const userData = {

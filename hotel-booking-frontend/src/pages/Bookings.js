@@ -117,6 +117,7 @@ const Bookings = () => {
         <h2 className="text-xl font-semibold">{isEditing ? 'Modifica Prenotazione' : 'Aggiungi Prenotazione'}</h2>
         <div className="space-y-4 mt-4">
           <select
+            data-testid="hotel-select"
             value={bookingForm.hotel}
             onChange={(e) => setBookingForm({ ...bookingForm, hotel: e.target.value })}
             className="border p-2 w-full"
