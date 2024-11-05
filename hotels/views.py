@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -20,6 +21,16 @@ class ServiceViewSet(viewsets.ModelViewSet):
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
+
+    @action(detail=True, methods=['patch'])
+    def update_status(self, request, pk=None):
+        try:
+            booking = self.get_object()  # Ottieni l'oggetto Booking
+            booking.status = request.data.get('status', booking.status)  # Aggiorna solo il campo status
+            booking.save()
+            return Response({'message': 'Status updated successfully'}, status=status.HTTP_200_OK)
+        except Booking.DoesNotExist:
+            return Response({"error": "Booking not found"}, status=status.HTTP_404_NOT_FOUND)
 
 # View per la gestione dei Token
 class CustomTokenObtainPairView(TokenObtainPairView):

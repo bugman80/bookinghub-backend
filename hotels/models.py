@@ -60,14 +60,12 @@ class Booking(models.Model):
 
     # Stato della prenotazione (con scelte predefinite)
     PENDING = 'pending'
-    CONFIRMED = 'confirmed'
-    CANCELLED = 'cancelled'
-    COMPLETED = 'completed'
+    APPROVED = 'approved'
+    REJECTED = 'rejected'
     BOOKING_STATUS_CHOICES = [
         (PENDING, 'Pending'),
-        (CONFIRMED, 'Confirmed'),
-        (CANCELLED, 'Cancelled'),
-        (COMPLETED, 'Completed'),
+        (APPROVED, 'Approved'),
+        (REJECTED, 'Rejected'),
     ]
     status = models.CharField(
         max_length=10,

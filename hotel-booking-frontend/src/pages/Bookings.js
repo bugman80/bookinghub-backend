@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import client from '../axios';
-import { getBookings, getHotels } from '../api';
+import { getBookings, getHotels, getUserData } from '../api';
 
 const Bookings = () => {
   const clean_form = { hotel: '', check_in: '', check_out: '', guests: '', total_price: 0 };
@@ -11,6 +11,8 @@ const Bookings = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editBookingId, setEditBookingId] = useState(null);
   const [errors, setErrors] = useState({});
+
+  const is_superuser = getUserData().superuser;
 
   // Funzione per recuperare la lista delle prenotazioni
   const fetchBookings = async () => {
@@ -78,6 +80,18 @@ const Bookings = () => {
       setBookings(bookings.filter((booking) => booking.id !== bookingId)); // Rimuovi la prenotazione dalla lista
     } catch (error) {
       console.error('Error deleting booking:', error);
+    }
+  };
+
+  // Funzione per approvare una prenotazione
+  const changeBookingStatus = async (bookingId, status) => {
+    try {
+      await client.patch(`/api/bookings/${bookingId}/update_status/`, {
+        status: status,
+      });
+      fetchBookings();
+    } catch (error) {
+      console.error('Error updating booking status:', error);
     }
   };
 
@@ -180,20 +194,43 @@ const Bookings = () => {
                 </p>
                 <p className="text-gray-700">Ospiti: {booking.guests}</p>
                 <p className="text-gray-700">Prezzo: {booking.total_price}</p>
+                <p className="text-gray-700">Stato: {booking.status}</p>
               </div>
               <div className="flex space-x-4">
-                <button
-                  onClick={() => startEditBooking(booking)}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-                >
-                  Modifica
-                </button>
-                <button
-                  onClick={() => deleteBooking(booking.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                >
-                  Elimina
-                </button>
+                {booking.status==="pending" && (
+                  <>
+                  {is_superuser && (
+                    <>
+                      <button
+                        onClick={() => changeBookingStatus(booking.id, 'approved')}
+                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                      >
+                        Approva
+                      </button>
+                      <button
+                        onClick={() => changeBookingStatus(booking.id, 'rejected')}
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                      >
+                        Rigetta
+                      </button>
+                    </>
+                  )}
+                  <>
+                    <button
+                      onClick={() => startEditBooking(booking)}
+                      className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                    >
+                      Modifica
+                    </button>
+                    <button
+                      onClick={() => deleteBooking(booking.id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    >
+                      Elimina
+                    </button>
+                  </>
+                </>
+                )}
               </div>
             </div>
           ))}
