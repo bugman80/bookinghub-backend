@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 from .models import Hotel, Service, Booking
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -34,7 +35,8 @@ class BookingSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def validate(self, data):
-        print("DENTROOOOOO")
+        if data['check_in'] < timezone.now().date():
+            raise serializers.ValidationError({'check_in': 'La data di partenza non deve essere passata.'})
         if data['check_out'] <= data['check_in']:
             raise serializers.ValidationError({'check_out': 'La data di partenza deve essere successiva alla data di arrivo.'})
         return data
