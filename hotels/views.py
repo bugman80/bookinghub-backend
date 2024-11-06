@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -19,13 +20,31 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
 # View per la gestione delle Prenotazioni
 class BookingViewSet(viewsets.ModelViewSet):
-    queryset = Booking.objects.all()
     serializer_class = BookingSerializer
+    queryset = Booking.objects.all()
+
+    # Se l'utente non e' un admin ritorna solo i suoi bookings
+    def get_queryset(self):
+        req_user = self.request.user
+        if req_user.is_superuser:
+            return self.queryset
+        return Booking.objects.filter(user=req_user)
 
     @action(detail=True, methods=['patch'])
     def update_status(self, request, pk=None):
         try:
             booking = self.get_object()  # Ottieni l'oggetto Booking
+            new_status = request.data.get('status')
+
+            # verifico che non ci sia overbooking
+            if new_status == Booking.APPROVED:
+                overlapping_bookings_count = Booking.objects.filter(
+                    check_out__gt=booking.check_in,
+                    check_in__lt=booking.check_out
+                ).exclude(pk=booking.pk).count()
+                if overlapping_bookings_count >= booking.hotel.total_rooms:
+                    return Response({"error": "No rooms available"})
+
             booking.status = request.data.get('status', booking.status)  # Aggiorna solo il campo status
             booking.save()
             return Response({'message': 'Status updated successfully'}, status=status.HTTP_200_OK)

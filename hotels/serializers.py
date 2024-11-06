@@ -34,6 +34,7 @@ class BookingSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def validate(self, data):
+        print("DENTROOOOOO")
         if data['check_out'] <= data['check_in']:
             raise serializers.ValidationError({'check_out': 'La data di partenza deve essere successiva alla data di arrivo.'})
         return data
