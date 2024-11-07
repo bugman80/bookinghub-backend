@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-from django.core.exceptions import ValidationError
 
 # Modello per la gestione degli Hotels
 class Hotel(models.Model):

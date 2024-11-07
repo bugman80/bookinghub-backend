@@ -1,12 +1,13 @@
-from django.contrib.auth.models import User
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Hotel, Service, Booking
-from .serializers import HotelSerializer, ServiceSerializer, BookingSerializer, CustomTokenObtainPairSerializer
+from .serializers import HotelSerializer, ServiceSerializer, BookingSerializer, CustomTokenObtainPairSerializer, RegisterSerializer
 
 # View per la gestione degli Hotels
 class HotelViewSet(viewsets.ModelViewSet):
@@ -23,6 +24,10 @@ class BookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingSerializer
     queryset = Booking.objects.all()
 
+    def perform_create(self, serializer):
+        # Imposta l'utente autenticato solo in fase di creazione
+        serializer.save(user=self.request.user)
+
     # Se l'utente non e' un admin ritorna solo i suoi bookings
     def get_queryset(self):
         req_user = self.request.user
@@ -38,12 +43,16 @@ class BookingViewSet(viewsets.ModelViewSet):
 
             # verifico che non ci sia overbooking
             if new_status == Booking.APPROVED:
-                overlapping_bookings_count = Booking.objects.filter(
+                overlapping_bookings = Booking.objects.filter(
                     check_out__gt=booking.check_in,
-                    check_in__lt=booking.check_out
-                ).exclude(pk=booking.pk).count()
-                if overlapping_bookings_count >= booking.hotel.total_rooms:
-                    return Response({"error": "No rooms available"})
+                    check_in__lt=booking.check_out,
+                    status=Booking.APPROVED
+                )
+                overlapping_bookings_for_user = overlapping_bookings.filter(user=booking.user)
+                if overlapping_bookings_for_user.count():
+                    return Response({"error": "Questo utente ha una prenotazione approvata per questo periodo"})
+                if overlapping_bookings.count() >= booking.hotel.total_rooms:
+                    return Response({"error": "Non ci sono stanze disponibili"})
 
             booking.status = request.data.get('status', booking.status)  # Aggiorna solo il campo status
             booking.save()
@@ -69,3 +78,9 @@ class LogoutView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserRegistrationView(CreateAPIView):
+    serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []

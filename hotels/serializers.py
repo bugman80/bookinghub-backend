@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import serializers
 from .models import Hotel, Service, Booking
@@ -53,3 +54,22 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['superuser'] = user.is_superuser
 
         return token
+
+# Serializzatore dei nuovi utenti
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'password')
+
+    def create(self, validated_data):
+        # Crea un nuovo utente con i dati validati
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+        )
+        return user

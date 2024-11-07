@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from hotels.views import HotelViewSet, ServiceViewSet, BookingViewSet, LogoutView,CustomTokenObtainPairView
+from hotels.views import HotelViewSet, ServiceViewSet, BookingViewSet, LogoutView, CustomTokenObtainPairView, UserRegistrationView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 router = DefaultRouter()
@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/logout/', LogoutView.as_view(), name='token_blacklist'),
+    path('api/register/', UserRegistrationView.as_view(), name='register'),
 ]
 
 if settings.DEBUG:
