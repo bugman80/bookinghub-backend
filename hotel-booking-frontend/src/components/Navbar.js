@@ -48,6 +48,16 @@ const Navbar = () => {
             >
               Home
             </Link>
+            {isAuthenticated && is_superuser && (
+              <Link
+              to="/users"
+              className={`${
+                location.pathname === '/users' ? 'text-blue-600' : 'text-gray-700'
+              } hover:text-blue-600`}
+              >
+                Utenti
+              </Link>
+            )}
             {isAuthenticated && (
               <Link
                 to="/hotels"

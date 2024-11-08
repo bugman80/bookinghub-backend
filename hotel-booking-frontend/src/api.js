@@ -36,7 +36,7 @@ export const getBookings = async () => {
     throw error;
   }
 };
-
+/*
 // Funzione per ottenere una singola prenotazione
 export const getBooking = async (id) => {
   try {
@@ -47,7 +47,7 @@ export const getBooking = async (id) => {
     throw error;
   }
 };
-
+*/
 // Funzione per creare una nuova prenotazione
 export const createBooking = async (bookingData) => {
   try {
@@ -71,4 +71,15 @@ export const getUserData = () => {
       superuser: decodedToken?.superuser
   };
   return userData;
+};
+
+// Funzione per ottenere la lista degli utenti
+export const getUsers = async () => {
+  try {
+    const response = await client.get(`${API_URL}users/`);
+    return response.data;
+  } catch (error) {
+    console.error('Errore durante il caricamento degli utenti', error);
+    throw error;
+  }
 };
