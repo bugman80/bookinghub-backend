@@ -3,6 +3,7 @@ from django.utils import timezone
 from rest_framework import serializers
 from .models import Hotel, Service, Booking
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.exceptions import ValidationError
 
 # Serializzatore dei servizi
 class ServiceSerializer(serializers.ModelSerializer):
@@ -31,9 +32,15 @@ class HotelSerializer(serializers.ModelSerializer):
 
 # Serializzatore delle prenotazioni
 class BookingSerializer(serializers.ModelSerializer):
+    user_email = serializers.SerializerMethodField()
     class Meta:
         model = Booking
         fields = '__all__'
+    
+    def get_user_email(self, obj):
+            if obj.user:
+                return obj.user.email
+            return None
     
     def validate(self, data):
         if data['check_in'] < timezone.now().date():

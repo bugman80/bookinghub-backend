@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView
@@ -30,6 +31,7 @@ class BookingViewSet(viewsets.ModelViewSet):
 
     # Se l'utente non e' un admin ritorna solo i suoi bookings
     def get_queryset(self):
+        print("daje")
         req_user = self.request.user
         if req_user.is_superuser:
             return self.queryset
@@ -47,12 +49,15 @@ class BookingViewSet(viewsets.ModelViewSet):
                     check_out__gt=booking.check_in,
                     check_in__lt=booking.check_out,
                     status=Booking.APPROVED
-                )
+                ).exclude(pk=booking.pk)
+                print(overlapping_bookings.first())
                 overlapping_bookings_for_user = overlapping_bookings.filter(user=booking.user)
+                print(overlapping_bookings_for_user.count())
+                print(overlapping_bookings.count())
                 if overlapping_bookings_for_user.count():
-                    return Response({"error": "Questo utente ha una prenotazione approvata per questo periodo"})
+                    raise ValidationError({"description": "Questo utente ha una prenotazione approvata per questo periodo"})
                 if overlapping_bookings.count() >= booking.hotel.total_rooms:
-                    return Response({"error": "Non ci sono stanze disponibili"})
+                    raise ValidationError({"description": "Non ci sono stanze disponibili per il periodo selezionato"})
 
             booking.status = request.data.get('status', booking.status)  # Aggiorna solo il campo status
             booking.save()

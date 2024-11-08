@@ -73,6 +73,28 @@ const Bookings = () => {
     }
   };
 
+  function showGeneralError(errorMessage) {
+    const errorContainer = document.getElementById('error-container');
+    
+    // Imposta il messaggio di errore
+    errorContainer.textContent = errorMessage;
+    
+    // Mostra il contenitore con una transizione
+    errorContainer.classList.remove('hidden');
+    errorContainer.style.opacity = '0';
+    
+    // Attiva la transizione di fade-in
+    setTimeout(() => {
+      errorContainer.style.opacity = '1';
+    }, 10);
+    
+    // Nasconde l'errore dopo qualche secondo
+    setTimeout(() => {
+      errorContainer.style.opacity = '0';
+      setTimeout(() => errorContainer.classList.add('hidden'), 200); // Rimuove la visualizzazione
+    }, 3000);
+  }
+
   // Funzione per eliminare una prenotazione
   const deleteBooking = async (bookingId) => {
     try {
@@ -91,6 +113,7 @@ const Bookings = () => {
       });
       fetchBookings();
     } catch (error) {
+      showGeneralError(error.response.data.description)
       console.error('Error updating booking status:', error);
     }
   };
@@ -125,6 +148,8 @@ const Bookings = () => {
 
   return (
     <div>
+      <div id="error-container" className="hidden w-max p-2 bg-red-500 text-white text-sm rounded shadow-lg transition-opacity duration-200 fixed"></div>
+    
       <h1 className="text-3xl font-bold mb-6">Prenotazioni</h1>
 
       <div className="mb-6 p-6 bg-gray-100 shadow-md rounded-lg">
@@ -195,6 +220,7 @@ const Bookings = () => {
                 <p className="text-gray-700">Ospiti: {booking.guests}</p>
                 <p className="text-gray-700">Prezzo: {booking.total_price}</p>
                 <p className="text-gray-700">Stato: {booking.status}</p>
+                <p className="text-gray-700">Utente: {booking.user_email}</p>
               </div>
               <div className="flex space-x-4">
                 {booking.status==="pending" && (

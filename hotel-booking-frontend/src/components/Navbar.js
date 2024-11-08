@@ -21,8 +21,6 @@ const Navbar = () => {
     const handleLogout = async () => {
       const access = localStorage.getItem('access');
       const refresh = localStorage.getItem('refresh');
-      console.log(access);
-      console.log(refresh);
       if (access && refresh) {
         try {
           await client.post('/api/logout/', {"refresh": refresh});
