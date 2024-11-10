@@ -52,7 +52,7 @@ L'utilizzo della applicazione per ora e' limitato a un numero di utenti minimo.
 
 ## Test
 
-L'applicazione presenta una suite di tests sia backend che frontend che vengono eseguiti tramite Travis CI.
+L'applicazione presenta una suite di tests sia backend che frontend che vengono eseguiti tramite GitHub actions.
 
 ## Deployment
 
