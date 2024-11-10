@@ -24,9 +24,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = 'django-insecure-ilh&wnsg+sregp#gh9x=woxxc2d^n)@(@pl-yb7oj+3xd3p699'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", True)
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
-print(DEBUG)
 
 ALLOWED_HOSTS = ['bookinghub-x8wh.onrender.com',]
 
