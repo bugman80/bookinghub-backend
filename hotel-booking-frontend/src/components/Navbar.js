@@ -6,7 +6,7 @@ import { getUserData } from '../api';
 const Navbar = () => {
     const location = useLocation(); // Ottieni la route attuale
     const isAuthenticated = !!localStorage.getItem('access');
-    const is_superuser = getUserData().superuser;
+    const is_superuser = null;
 
     const navigate = useNavigate();
 
@@ -15,6 +15,13 @@ const Navbar = () => {
       localStorage.removeItem('access');
       localStorage.removeItem('refresh');
       navigate('/login');
+    }
+
+    try {
+      is_superuser = getUserData().superuser;
+    } catch (err) {
+      console.error('Token error:', err);
+      restart_session();
     }
 
     // Funzione per eseguire il logout dell'utente
