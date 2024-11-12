@@ -21,16 +21,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ilh&wnsg+sregp#gh9x=woxxc2d^n)@(@pl-yb7oj+3xd3p699'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://bookinghub-x8wh.onrender.com',
-]
-ALLOWED_HOSTS = ['bookinghub-x8wh.onrender.com','localhost']
-
 
 # Application definition
 
@@ -57,6 +51,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://bookinghub-x8wh.onrender.com',
+]
+
+ALLOWED_HOSTS = ['bookinghub-x8wh.onrender.com','localhost']
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',

@@ -37,13 +37,42 @@ BookingHub e' una applicazione web ideata per gestire le operazione di CRUD di H
 
 ## Installazione
 
-Segui questi passaggi per configurare l'applicazione in locale.
+Segui questi passaggi per configurare l'applicazione in locale, l'hosting del codice sorgente e' su github (https://github.com/bugman80/bookinghub).
 
 ### Clona il repository
 
 ```bash
 git clone https://github.com/username/NomeProgetto.git
 cd NomeProgetto
+```
+
+### Crea un virtualenv
+
+Questo step prevede che python 3 sia installato sulla macchina, dopodiche' si puo' procedere a create un virtualenv per il progetto e ad attivarlo
+
+```bash
+python -m venv bookinghub_env
+source ./bookinghub_env/bin/activate
+```
+### Installa le dipendenze per python
+
+```bash
+pip install -r requirements.txt
+```
+### Crea il database, il superuser e fa partire il server di sviluppo
+
+```bash
+./manage.py migrate
+./manage.py create_superuser_if_not_exists
+./manage.py runserver
+```
+
+### Installa le dipendenze frontend e fa partire il frontend
+
+```bash
+cd hotel-booking-frontend
+npm install
+npm run
 ```
 
 ## Utilizzo
@@ -56,7 +85,7 @@ L'applicazione presenta una suite di tests sia backend che frontend che vengono 
 
 ## Deployment
 
-L'applicazione e' momentaneamente rilasciata su Heroku.
+L'applicazione e' momentaneamente rilasciata su Render (https://render.com/).
 
 ## Licenza
 

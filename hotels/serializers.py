@@ -3,7 +3,6 @@ from django.utils import timezone
 from rest_framework import serializers
 from .models import Hotel, Service, Booking
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework.exceptions import ValidationError
 
 # Serializzatore dei servizi
 class ServiceSerializer(serializers.ModelSerializer):
@@ -20,12 +19,13 @@ class HotelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_image_url(self, obj):
+        # Ritorno l'URL dell'immagine se esiste
         if obj.image:
-            return obj.image.url  # Ritorna l'URL dell'immagine se esiste
+            return obj.image.url
         return None
     
     def update(self, instance, validated_data):
-        # Rimuove il campo immagine se non presente nei dati inviati (per esempio in caso di modifica di altri dati)
+        # Rimuovo il campo immagine se non presente nei dati inviati (per esempio in caso di modifica di altri dati)
         if 'image' not in validated_data:
             validated_data.pop('image', None)
         return super().update(instance, validated_data)
@@ -43,6 +43,7 @@ class BookingSerializer(serializers.ModelSerializer):
             return None
     
     def validate(self, data):
+        # le date di check-in e check-out devono essere congruenti
         if data['check_in'] < timezone.now().date():
             raise serializers.ValidationError({'check_in': 'La data di partenza non deve essere passata.'})
         if data['check_out'] <= data['check_in']:
@@ -62,7 +63,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
-# Serializzatore dei nuovi utenti
+# Serializzatore per la registrazione dei nuovi utenti
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
 

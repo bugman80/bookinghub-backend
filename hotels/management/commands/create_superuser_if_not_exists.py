@@ -4,17 +4,17 @@ from django.db import IntegrityError
 import os
 
 class Command(BaseCommand):
-    help = 'Crea un superuser se non esiste già.'
+    help = 'Crea un superuser se non esiste'
 
     def handle(self, *args, **kwargs):
         User = get_user_model()
         
-        # Recupera le credenziali del superuser dalle variabili d'ambiente
+        # Recupero le credenziali del superuser dalle variabili d'ambiente
         username = os.getenv("DJANGO_SUPERUSER_USERNAME", "admin")
         email = os.getenv("DJANGO_SUPERUSER_EMAIL", "admin@example.com")
         password = os.getenv("DJANGO_SUPERUSER_PASSWORD", "password")
 
-        # Verifica se il superuser esiste
+        # Verifico se il superuser esiste altrimenti lo creo
         if not User.objects.filter(username=username).exists():
             try:
                 User.objects.create_superuser(username=username, email=email, password=password)

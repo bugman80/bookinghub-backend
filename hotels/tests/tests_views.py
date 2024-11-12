@@ -9,8 +9,12 @@ from datetime import datetime, timedelta
 
 @pytest.mark.django_db
 def test_update_booking_status():
+    '''
+    questo test verifica un semplice scenario di approvazione di una prenotazione
+    '''
     # Creo un utente di test
     user = User.objects.create(first_name="Test Name", last_name="Test Last Name", email="user@user.it")
+    # Creo un token per l'utente
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
     # Crea un hotel di test
@@ -37,7 +41,7 @@ def test_update_booking_status():
     
     client = APIClient()
     client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token)
-    
+    # Approvo la prenotazione
     url = reverse('booking-update-status', kwargs={'pk': prenotazione.pk})
     data = {'status': 'approved'}   
     response = client.patch(url, data, format='json')
@@ -52,8 +56,13 @@ def test_update_booking_status():
 
 @pytest.mark.django_db
 def test_overlapping_bookings():
+    '''
+    questo test verifica che la validazione del booking rilevi un overlap di prenotazione 
+    per lo stesso utente nello stesso periodo
+    '''
     # Creo un utente di test
     user = User.objects.create(first_name="Test Name", last_name="Test Last Name", email="user@user.it")
+    # Creo un token per l'utente
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
     # Crea un hotel di test
@@ -68,7 +77,7 @@ def test_overlapping_bookings():
                                  price_per_night=10, 
                                  is_active=True)
 
-    # Creo una prenotazione per l'hotel
+    # Creo tre prenotazioni per lo stesso utente e hotel e le ultime due sono in overlap
     prenotazione1 = Booking.objects.create(hotel=hotel, 
                                            user=user, 
                                            check_in=datetime.today() + timedelta(weeks=1), 
@@ -87,20 +96,21 @@ def test_overlapping_bookings():
     
     client = APIClient()
     client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token)
-    
+    # Approvo la prima ed e' ok
     url = reverse('booking-update-status', kwargs={'pk': prenotazione1.pk})
     data = {'status': 'approved'}   
     response = client.patch(url, data, format='json')
 
     assert response.status_code == status.HTTP_200_OK
 
+    # Approvo la seconda ed e' ok
     url = reverse('booking-update-status', kwargs={'pk': prenotazione2.pk})
     data = {'status': 'approved'}   
     response = client.patch(url, data, format='json')
 
     assert response.status_code == status.HTTP_200_OK
 
-     # Verifico che non consenta di avere piu' prenotazione per lo stesso periodo per lo stesso utente
+    # La terza mi rileva l'overlap e va in errore
     url = reverse('booking-update-status', kwargs={'pk': prenotazione3.pk})
     data = {'status': 'approved'}   
     response = client.patch(url, data, format='json')
@@ -110,17 +120,22 @@ def test_overlapping_bookings():
 
 @pytest.mark.django_db
 def test_overbooking():
-    # Creo un utente di test
+    '''
+    questo test verifica che la validazione dei bookings rilevi un overbooking per l'hotel
+    ovvero che il numero di prenotazioni in overlap non superi il numero delle camere disponibili
+    '''
+    # Creo tre utenti di test
     user1 = User.objects.create(first_name="Test Name1", username="uno", last_name="Test Last Name1", email="user1@user.it")
     user2 = User.objects.create(first_name="Test Name2", username="due", last_name="Test Last Name2", email="user2@user.it")
     user3 = User.objects.create(first_name="Test Name3", username="tre", last_name="Test Last Name3", email="user3@user.it")
+    # Creo tre token per gli utenti
     refresh1 = RefreshToken.for_user(user1)
     access_token1 = str(refresh1.access_token)
     refresh2 = RefreshToken.for_user(user2)
     access_token2 = str(refresh2.access_token)
     refresh3 = RefreshToken.for_user(user3)
     access_token3 = str(refresh3.access_token)
-    # Crea un hotel di test
+    # Crea un hotel di test con due camere solamente
     hotel = Hotel.objects.create(name="Test Hotel", 
                                  description="Hotel di test", 
                                  address="via di test, 2", 
@@ -132,7 +147,7 @@ def test_overbooking():
                                  price_per_night=10, 
                                  is_active=True)
 
-    # Creo una prenotazione per l'hotel
+    # Creo 3 prenotazioni per l'albergo tutte in overlap con 3 utenti diversi
     prenotazione1 = Booking.objects.create(hotel=hotel, 
                                            user=user1, 
                                            check_in=datetime.today() + timedelta(weeks=1), 
@@ -149,6 +164,7 @@ def test_overbooking():
                                            check_out=datetime.today() + timedelta(weeks=2),
                                            guests=2)
     
+    # Creo i 3 clients per gli utenti
     client1 = APIClient()
     client1.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token1)
 
@@ -158,19 +174,21 @@ def test_overbooking():
     client3 = APIClient()
     client3.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token3)
     
+    # Approvo la prima prenotazione con successo
     url = reverse('booking-update-status', kwargs={'pk': prenotazione1.pk})
     data = {'status': 'approved'}   
     response = client1.patch(url, data, format='json')
 
     assert response.status_code == status.HTTP_200_OK
 
+    # Approvo la seconda prenotazione con successo
     url = reverse('booking-update-status', kwargs={'pk': prenotazione2.pk})
     data = {'status': 'approved'}   
     response = client2.patch(url, data, format='json')
 
     assert response.status_code == status.HTTP_200_OK
 
-     # Verifico che non consenta di avere piu' prenotazione per lo stesso periodo per lo stesso utente
+    # La terza approvazione fallisce perche' l'hotel non ha piu' camere disponibili per il periodo scelto
     url = reverse('booking-update-status', kwargs={'pk': prenotazione3.pk})
     data = {'status': 'approved'}   
     response = client3.patch(url, data, format='json')

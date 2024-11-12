@@ -9,7 +9,12 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Hotel, Service, Booking
-from .serializers import HotelSerializer, ServiceSerializer, BookingSerializer, CustomTokenObtainPairSerializer, RegisterSerializer, UserSerializer
+from .serializers import (HotelSerializer, 
+                          ServiceSerializer, 
+                          BookingSerializer, 
+                          CustomTokenObtainPairSerializer, 
+                          RegisterSerializer, 
+                          UserSerializer)
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

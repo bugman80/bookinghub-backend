@@ -44,7 +44,7 @@ class Booking(models.Model):
     # Riferimento all'hotel prenotato (relazione many-to-one)
     hotel = models.ForeignKey('Hotel', on_delete=models.CASCADE, related_name='bookings')
 
-    # Riferimento all'utente che ha effettuato la prenotazione (se usi il modello User di Django)
+    # Riferimento all'utente che ha effettuato la prenotazione
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
 
     # Data di check-in e check-out
@@ -57,7 +57,7 @@ class Booking(models.Model):
     # Prezzo totale della prenotazione
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
-    # Stato della prenotazione (con scelte predefinite)
+    # Stato della prenotazione
     PENDING = 'pending'
     APPROVED = 'approved'
     REJECTED = 'rejected'
