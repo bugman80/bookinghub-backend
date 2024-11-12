@@ -3,14 +3,18 @@ import { useNavigate } from 'react-router-dom';
 
 // Crea un'istanza di Axios e la configura per puntare al backend
 const client = axios.create({
-    baseURL: 'http://localhost:8000/',
+    //baseURL: 'http://localhost:8000/',
+    baseURL: process.env.REACT_APP_BACKEND_URL,
 });
+
+
+console.log(process.env.REACT_APP_BACKEND_URL)
 
 // Funzione per gestire il refresh del token
 async function refreshToken() {
     const refresh = localStorage.getItem('refresh');
     try {
-        const response = await axios.post('api/token/refresh/', { refresh });
+        const response = await client.post('api/token/refresh/', { refresh });
         localStorage.setItem('access', response.data.access); // Aggiorna il nuovo access token
         return response.data.access;
     } catch (error) {

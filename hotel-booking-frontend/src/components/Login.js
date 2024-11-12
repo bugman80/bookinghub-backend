@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import client from '../axios';
 import { useNavigate } from 'react-router-dom';
 import Register from './Register';
 
@@ -28,7 +28,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/token/', credentials);
+      const response = await client.post('/api/token/', credentials);
       localStorage.setItem('access', response.data.access);
       localStorage.setItem('refresh', response.data.refresh);
       navigate('/'); // Reindirizza l'utente alla homepage

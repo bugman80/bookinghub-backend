@@ -21,5 +21,6 @@ Thumbs.db
 
 # Ignora i file di ambiente (se usi un file .env per le variabili)
 .env
+.envrc
 
 media/

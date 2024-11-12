@@ -29,7 +29,7 @@ DEBUG = True
 CSRF_TRUSTED_ORIGINS = [
     'https://bookinghub-x8wh.onrender.com',
 ]
-ALLOWED_HOSTS = ['bookinghub-x8wh.onrender.com',]
+ALLOWED_HOSTS = ['bookinghub-x8wh.onrender.com','localhost']
 
 
 # Application definition
