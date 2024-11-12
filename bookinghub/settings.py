@@ -58,6 +58,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'https://bookinghub-x8wh.onrender.com',
 ]
 
 ROOT_URLCONF = 'bookinghub.urls'
