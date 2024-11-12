@@ -6,7 +6,8 @@ import { getUserData } from '../api';
 const Navbar = () => {
     const location = useLocation(); // Ottieni la route attuale
     const isAuthenticated = !!localStorage.getItem('access');
-    const is_superuser = null;
+
+    let is_superuser = null;
 
     const navigate = useNavigate();
 
