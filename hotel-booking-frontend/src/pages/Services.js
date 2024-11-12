@@ -45,7 +45,7 @@ const Services = () => {
     if(validate()){
       try {
         const response = await client.post('/api/services/', serviceForm);
-        setServices([...services, response.data]); // Aggiungi la nuova prenotazione alla lista
+        setServices([...services, response.data]);
         setServiceForm(clean_form); // Reset del form
       } catch (error) {
         console.error('Error creating service:', error);
@@ -78,9 +78,9 @@ const Services = () => {
     if(validate()){
       try {
         const response = await client.put(`/api/services/${editServiceId}/`, serviceForm);
-        setServices(services.map((service) => (service.id === editServiceId ? response.data : service))); // Aggiorna la lista
-        setServiceForm(clean_form); // Reset del form
-        setIsEditing(false); // Esci dalla modalità di modifica
+        setServices(services.map((service) => (service.id === editServiceId ? response.data : service)));
+        setServiceForm(clean_form);
+        setIsEditing(false);
         setEditServiceId(null);
       } catch (error) {
         console.error('Error updating service:', error);

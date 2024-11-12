@@ -13,7 +13,8 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar /> {/* Navbar sarà inclusa in tutte le pagine */}
+        {/* Navbar sarà inclusa in tutte le pagine */}
+        <Navbar />
         <div className="container mx-auto p-4">
           <Routes>
             <Route path="/login" element={<Login/>} />

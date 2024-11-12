@@ -36,18 +36,7 @@ export const getBookings = async () => {
     throw error;
   }
 };
-/*
-// Funzione per ottenere una singola prenotazione
-export const getBooking = async (id) => {
-  try {
-    const response = await client.get(`${API_URL}bookings/${id}/`);
-    return response.data;
-  } catch (error) {
-    console.error('Errore durante il caricamento della prenotazione', error);
-    throw error;
-  }
-};
-*/
+
 // Funzione per creare una nuova prenotazione
 export const createBooking = async (bookingData) => {
   try {

@@ -21,7 +21,7 @@ describe('Hotels', () => {
     
         render(<Hotels />);
 
-        //Verifico che l'utente non possa aggiungere/modificare hotels
+        // Verifico che l'utente non possa aggiungere/modificare hotels
         await waitFor(() => {expect(screen.queryByText('Aggiungi Hotel')).not.toBeInTheDocument();});
     
         // Verifica che i servizi siano visualizzati
@@ -33,6 +33,7 @@ describe('Hotels', () => {
         await waitFor(() => expect(screen.queryByText('Hotel Madonnina')).toBeInTheDocument());
     });
     it('visualizza la lista degli hotels per gli utenti admin', async () => {
+        // Simulo che l'utente sia superuser
         const userData = {
             id: 1,
             email: 'test@test.it',
@@ -55,10 +56,11 @@ describe('Hotels', () => {
     
         render(<Hotels />);
 
-        //Verifico che venga visualizzato il form per aggiungere/modificare hotels
+        // Verifico che venga visualizzato il form per aggiungere/modificare hotels
         await waitFor(() => {expect(screen.queryByText('Aggiungi Hotel')).toBeInTheDocument();});
     });
     it('verifico la modifica di un hotel', async () => {
+        // Simulo che l'utente sia superuser
         const userData = {
             id: 1,
             email: 'test@test.it',
@@ -85,18 +87,19 @@ describe('Hotels', () => {
         await waitFor(() => expect(screen.queryByText('Hotel Colosseo')).toBeInTheDocument());
         await waitFor(() => expect(screen.queryByText('Hotel Madonnina')).toBeInTheDocument());
 
-        //Verifico che venga visualizzato il pulsante di modifica nella lista degli hotels
+        // Verifico che venga visualizzato il pulsante di modifica nella lista degli hotels
         const buttons = screen.getAllByRole('button', { name: 'Modifica' });
-        //Mi aspetto due hotels in lista
+        // Mi aspetto due hotels in lista
         expect(buttons).toHaveLength(2);
         userEvent.click(buttons[0]);
         await waitFor(() => expect(screen.queryByText('Hotel Madonnina')).toBeInTheDocument());
-        //Verifico che venga il form per aggiungere/modificare hotels sia popolato con i dati del primo hotel
+        // Verifico che venga il form per aggiungere/modificare hotels sia popolato con i dati del primo hotel
         await waitFor(() => {expect(screen.queryByText('Modifica Hotel')).toBeInTheDocument();});
         const inputElement = screen.getByPlaceholderText('Nome');
         expect(inputElement).toHaveValue('Hotel Colosseo');
     });
     it('verifico la creazione di un hotel', async () => {
+        // Simulo che l'utente sia superuser
         const userData = {
             id: 1,
             email: 'test@test.it',
@@ -127,6 +130,7 @@ describe('Hotels', () => {
         await waitFor(() => expect(screen.queryByText('Hotel Colosseo')).toBeInTheDocument());
         await waitFor(() => expect(screen.queryByText('Hotel Madonnina')).toBeInTheDocument());
 
+        // Popolo il form di creazione
         const inputNome = screen.getByPlaceholderText('Nome');
         const inputDescrizione = screen.getByPlaceholderText('Descrizione');
         const inputIndirizzo = screen.getByPlaceholderText('Indirizzo');
@@ -150,18 +154,20 @@ describe('Hotels', () => {
         userEvent.type(inputPaese, hotelData.country);
         userEvent.type(inputCamere, hotelData.total_rooms);
         userEvent.type(inputPrezzo, hotelData.price_per_night);
-
+        
+        // Clikko aggiungi
         const aggiungiButtons = screen.getAllByRole('button', { name: 'Aggiungi' });
         expect(aggiungiButtons).toHaveLength(1);
         userEvent.click(aggiungiButtons[0]);
         
-        //Verifico che venga visualizzato il pulsante di modifica nella lista degli hotels
+        // Verifico il nuovo Hotel sia in lista ed abbia i pulstanti per le actions
         await waitFor(() => expect(screen.queryByText('Hotel Napoli')).toBeInTheDocument());
         const buttons = await waitFor(() => screen.getAllByRole('button', { name: 'Elimina' }));
-        //Mi aspetto due hotels in lista
+        // Adesso mi aspetto tre hotels in lista
         expect(buttons).toHaveLength(3);
     });
     it('verifico la cancellazione di un hotel', async () => {
+        // Simulo che l'utente sia superuser
         const userData = {
             id: 1,
             email: 'test@test.it',
@@ -188,11 +194,13 @@ describe('Hotels', () => {
         await waitFor(() => expect(screen.queryByText('Hotel Colosseo')).toBeInTheDocument());
         await waitFor(() => expect(screen.queryByText('Hotel Madonnina')).toBeInTheDocument());
 
-        //Verifico che venga visualizzato il pulsante di modifica nella lista degli hotels
+        // Verifico che venga visualizzato il pulsante di cancellazione nella lista degli hotels
         const buttons = screen.getAllByRole('button', { name: 'Elimina' });
-        //Mi aspetto due hotels in lista
+        // Mi aspetto due hotels in lista
         expect(buttons).toHaveLength(2);
+        // Clikko il pulsante elimina
         userEvent.click(buttons[0]);
+        // Mi aspetto che l'hotel non sia piu' visualizzato
         await waitFor(() => expect(screen.queryByText('Hotel Colosseo')).not.toBeInTheDocument());
     });
 });

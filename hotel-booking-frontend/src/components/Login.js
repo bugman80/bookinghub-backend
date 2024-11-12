@@ -31,9 +31,10 @@ const Login = () => {
       const response = await client.post('/api/token/', credentials);
       localStorage.setItem('access', response.data.access);
       localStorage.setItem('refresh', response.data.refresh);
-      navigate('/'); // Reindirizza l'utente alla homepage
+      // Reindirizza l'utente alla homepage
+      navigate('/');
     } catch (err) {
-      setError('Invalid username or password'); // Gestisci gli errori
+      setError('Invalid username or password');
     }
   };
 

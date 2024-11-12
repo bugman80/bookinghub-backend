@@ -88,7 +88,7 @@ const Hotels = () => {
     setImage(null);
     setImageUrl("");
     if (fileInputRef.current) {
-      fileInputRef.current.value = "";  // Clear the actual input value
+      fileInputRef.current.value = "";
     }
     setActive(false);
   };
@@ -161,7 +161,7 @@ const Hotels = () => {
       try {
         const formData = populateForm();
         const response = await client.post('/api/hotels/', formData);
-        setHotels([...hotels, response.data]); // Aggiungi l'hotel alla lista
+        setHotels([...hotels, response.data]);
         cleanForm();
       } catch (error) {
         console.error('Error creating hotel:', error);
@@ -173,7 +173,7 @@ const Hotels = () => {
   const deleteHotel = async (hotelId) => {
     try {
       await client.delete(`/api/hotels/${hotelId}/`);
-      setHotels(hotels.filter((hotel) => hotel.id !== hotelId)); // Rimuovi l'hotel dalla lista
+      setHotels(hotels.filter((hotel) => hotel.id !== hotelId));
     } catch (error) {
       console.error('Error deleting hotel:', error);
     }
@@ -203,8 +203,8 @@ const Hotels = () => {
       try {
         const formData = populateForm();
         const response = await client.put(`/api/hotels/${hotelId}/`, formData);
-        setHotels(hotels.map((hotel) => (hotel.id === hotelId ? response.data : hotel))); // Aggiorna la lista
-        setIsEditing(false); // Esci dalla modalità di modifica
+        setHotels(hotels.map((hotel) => (hotel.id === hotelId ? response.data : hotel)));
+        setIsEditing(false);
         setHotelId(null);
         cleanForm();
       } catch (error) {

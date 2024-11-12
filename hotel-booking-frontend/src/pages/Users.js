@@ -21,6 +21,7 @@ const Users = () => {
     fetchUsers();
   }, []);
 
+  // Cambia un utente da guest a superuser e viceversa
   const changeUserStatus = async (userId, is_superuser) => {
     try {
       await client.patch(`/api/users/${userId}/`, {

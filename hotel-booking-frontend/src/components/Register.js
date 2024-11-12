@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import client from '../axios';
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -10,11 +10,12 @@ function Register() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
+  // Funzione per la registrazione di un nuovo utente
   const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/register/', {
+      const response = await client.post('/api/register/', {
         username,
         email,
         first_name,
@@ -22,7 +23,8 @@ function Register() {
         password,
       });
 
-      if (response.status === 201) { // 201 Created è lo status di successo per una nuova risorsa
+      // Utente creato con successo
+      if (response.status === 201) {
         setSuccess(true);
         setError(null);
         setUsername('');

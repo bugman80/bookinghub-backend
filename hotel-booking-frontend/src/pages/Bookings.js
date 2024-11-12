@@ -6,12 +6,13 @@ const Bookings = () => {
   const clean_form = { hotel: '', check_in: '', check_out: '', guests: '', total_price: 0 };
 
   const [bookings, setBookings] = useState([]);
-  const [hotels, setHotels] = useState([]); // Lista di hotel per il dropdown
+  const [hotels, setHotels] = useState([]);
   const [bookingForm, setBookingForm] = useState(clean_form);
   const [isEditing, setIsEditing] = useState(false);
   const [editBookingId, setEditBookingId] = useState(null);
   const [errors, setErrors] = useState({});
 
+  // Verifico se l'utente e' guest o superuser
   const is_superuser = getUserData().superuser;
 
   // Funzione per recuperare la lista delle prenotazioni
@@ -65,21 +66,20 @@ const Bookings = () => {
     if(validate()){
       try {
         const response = await client.post('/api/bookings/', bookingForm);
-        setBookings([...bookings, response.data]); // Aggiungi la nuova prenotazione alla lista
-        setBookingForm(clean_form); // Reset del form
+        setBookings([...bookings, response.data]);
+        setBookingForm(clean_form);
       } catch (error) {
         setErrors(error.response.data);
       }
     }
   };
 
+  // Funzione per mostrare la notifica toast in caso di errore
   function showGeneralError(errorMessage) {
     const errorContainer = document.getElementById('error-container');
-    
-    // Imposta il messaggio di errore
     errorContainer.textContent = errorMessage;
     
-    // Mostra il contenitore con una transizione
+    // Mostro il messaggio con una transizione
     errorContainer.classList.remove('hidden');
     errorContainer.style.opacity = '0';
     
@@ -91,7 +91,7 @@ const Bookings = () => {
     // Nasconde l'errore dopo qualche secondo
     setTimeout(() => {
       errorContainer.style.opacity = '0';
-      setTimeout(() => errorContainer.classList.add('hidden'), 200); // Rimuove la visualizzazione
+      setTimeout(() => errorContainer.classList.add('hidden'), 200);
     }, 3000);
   }
 
@@ -99,7 +99,7 @@ const Bookings = () => {
   const deleteBooking = async (bookingId) => {
     try {
       await client.delete(`/api/bookings/${bookingId}/`);
-      setBookings(bookings.filter((booking) => booking.id !== bookingId)); // Rimuovi la prenotazione dalla lista
+      setBookings(bookings.filter((booking) => booking.id !== bookingId));
     } catch (error) {
       console.error('Error deleting booking:', error);
     }
@@ -136,9 +136,9 @@ const Bookings = () => {
     if(validate()){
       try {
         const response = await client.put(`/api/bookings/${editBookingId}/`, bookingForm);
-        setBookings(bookings.map((booking) => (booking.id === editBookingId ? response.data : booking))); // Aggiorna la lista
-        setBookingForm(clean_form); // Reset del form
-        setIsEditing(false); // Esci dalla modalità di modifica
+        setBookings(bookings.map((booking) => (booking.id === editBookingId ? response.data : booking)));
+        setBookingForm(clean_form);
+        setIsEditing(false);
         setEditBookingId(null);
       } catch (error) {
         console.error('Error updating booking:', error);

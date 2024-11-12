@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom'; // Importa Link da React Router
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import client from '../axios';
 import { getUserData } from '../api';
 
 const Navbar = () => {
-    const location = useLocation(); // Ottieni la route attuale
+    const location = useLocation();
     const isAuthenticated = !!localStorage.getItem('access');
 
     let is_superuser = null;

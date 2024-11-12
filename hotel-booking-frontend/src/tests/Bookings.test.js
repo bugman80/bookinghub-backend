@@ -2,7 +2,6 @@ import React from 'react';
 import axios from './__mocks__/axios'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Hotels from '../pages/Hotels';
 import * as apis from '../api';
 import Bookings from '../pages/Bookings';
 
@@ -59,13 +58,13 @@ describe('Bookings', () => {
         axios.get.mockResolvedValueOnce(mockHotels);
 
         render(<Bookings />);
-        //Verifico le prenotazioni in pending abbiano il tasto accept/reject
+        // Verifico le prenotazioni in pending abbiano il tasto accept/reject
         await waitFor(() => expect(screen.queryByText('Stato: pending')).toBeInTheDocument());
         const buttonsAccept = await waitFor(() => screen.getAllByRole('button', { name: 'Approva' }));
         const buttonsReject = await waitFor(() => screen.getAllByRole('button', { name: 'Rigetta' }));
         expect(buttonsAccept).toHaveLength(1);
         expect(buttonsReject).toHaveLength(1);
-        //Verifica che le prenotazioni accettate non hanno nessun tasto
+        // Verifica che le prenotazioni accettate non hanno nessun tasto
         const buttonsModify = await waitFor(() => screen.getAllByRole('button', { name: 'Modifica' }));
         const buttonsDelete = await waitFor(() => screen.getAllByRole('button', { name: 'Elimina' }));
         expect(buttonsModify).toHaveLength(1);
@@ -96,13 +95,13 @@ describe('Bookings', () => {
         await waitFor(() => expect(screen.queryByText('Arrivo: 2024-10-28 | Partenza: 2024-10-30')).toBeInTheDocument());
         await waitFor(() => expect(screen.queryByText('Arrivo: 2024-10-01 | Partenza: 2024-10-11')).toBeInTheDocument());
         
-        //Verifico che venga visualizzato il pulsante di modifica nella lista delle prenotazioni
+        // Verifico che venga visualizzato il pulsante di modifica nella lista delle prenotazioni
         const buttons = screen.getAllByRole('button', { name: 'Modifica' });
-        //Mi aspetto due prenotazioni in lista
+        // Mi aspetto due prenotazioni in lista
         expect(buttons).toHaveLength(2);
         userEvent.click(buttons[0]);
         
-        //Verifico che venga il form per aggiungere/modificare prenotazioni sia popolato con i dati del primo hotel
+        // Verifico che venga il form per aggiungere/modificare prenotazioni sia popolato con i dati del primo hotel
         await waitFor(() => {expect(screen.queryByText('Modifica Prenotazione')).toBeInTheDocument();});
         const inputElement1 = screen.getByPlaceholderText('Data di Arrivo');
         expect(inputElement1).toHaveValue('2024-10-28');
@@ -152,7 +151,7 @@ describe('Bookings', () => {
         expect(aggiungiButtons).toHaveLength(1);
         userEvent.click(aggiungiButtons[0]);
 
-        //Mi aspetto tre prenotazioni in lista
+        // Mi aspetto tre prenotazioni in lista
         await waitFor(() => expect(screen.queryByText('Arrivo: 2024-11-20 | Partenza: 2024-11-25')).toBeInTheDocument());
         const buttons = await waitFor(() => screen.getAllByRole('button', { name: 'Elimina' }));
         expect(buttons).toHaveLength(3);
@@ -182,9 +181,9 @@ describe('Bookings', () => {
         await waitFor(() => expect(screen.queryByText('Arrivo: 2024-10-28 | Partenza: 2024-10-30')).toBeInTheDocument());
         await waitFor(() => expect(screen.queryByText('Arrivo: 2024-10-01 | Partenza: 2024-10-11')).toBeInTheDocument());
 
-        //Verifico che venga visualizzato il pulsante di modifica nella lista degli hotels
+        // Verifico che venga visualizzato il pulsante di modifica nella lista degli hotels
         const buttons = screen.getAllByRole('button', { name: 'Elimina' });
-        //Mi aspetto due hotels in lista
+        // Mi aspetto due hotels in lista
         expect(buttons).toHaveLength(2);
         userEvent.click(buttons[0]);
         await waitFor(() => expect(screen.queryByText('Arrivo: 2024-10-28 | Partenza: 2024-10-30')).not.toBeInTheDocument());

@@ -3,12 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 // Crea un'istanza di Axios e la configura per puntare al backend
 const client = axios.create({
-    //baseURL: 'http://localhost:8000/',
     baseURL: process.env.REACT_APP_BACKEND_URL,
 });
-
-
-console.log(process.env.REACT_APP_BACKEND_URL)
 
 // Funzione per gestire il refresh del token
 async function refreshToken() {
@@ -41,7 +37,8 @@ client.interceptors.response.use(
     async error => {
         const originalRequest = error.config;
         if (error.response && (error.response.status === 401 || error.response.status === 403) && !originalRequest._retry) {
-            originalRequest._retry = true; // Evita cicli infiniti
+            // Evita il ciclo infinito
+            originalRequest._retry = true;
 
             const newAccessToken = await refreshToken();
             if (newAccessToken) {
@@ -54,7 +51,7 @@ client.interceptors.response.use(
             }
         }
         
-        // Se il refresh fallisce, o c'è un altro errore, lo propaga
+        // Se il refresh fallisce propaga l'errore
         return Promise.reject(error);
     }
 );
