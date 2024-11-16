@@ -25,6 +25,13 @@ class HotelViewSet(viewsets.ModelViewSet):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
 
+    # Se l'utente non e' un admin ritorna solo gli hotel attivi
+    def get_queryset(self):
+        req_user = self.request.user
+        if req_user.is_superuser:
+            return self.queryset
+        return Hotel.objects.filter(is_active=True)
+
 # View per la gestione dei Servizi
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
@@ -41,7 +48,6 @@ class BookingViewSet(viewsets.ModelViewSet):
 
     # Se l'utente non e' un admin ritorna solo i suoi bookings
     def get_queryset(self):
-        print("daje")
         req_user = self.request.user
         if req_user.is_superuser:
             return self.queryset

@@ -194,3 +194,121 @@ def test_overbooking():
     response = client3.patch(url, data, format='json')
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data['description'] == "Non ci sono stanze disponibili per il periodo selezionato"
+
+
+@pytest.mark.django_db
+def test_hotels_filtering():
+    '''
+    questo test verifica che la lista degli hotels e' completa se l'utente e' superuser
+    altrimenti per gli utenti guest la lista degli hotels comprende solo quelli attivi
+    '''
+    # Creo due utenti di test, uno guest e uno superuser
+    user1 = User.objects.create(first_name="Test Name1", username="uno", last_name="Test Last Name1", email="user1@user.it", is_superuser=True)
+    user2 = User.objects.create(first_name="Test Name2", username="due", last_name="Test Last Name2", email="user2@user.it")
+    # Creo due token per gli utenti
+    refresh1 = RefreshToken.for_user(user1)
+    access_token1 = str(refresh1.access_token)
+    refresh2 = RefreshToken.for_user(user2)
+    access_token2 = str(refresh2.access_token)
+    # Crea due hotels di test, uno attivo e uno non attivo
+    hotel1 = Hotel.objects.create(name="Test Hotel1", 
+                                 description="Hotel di test 1", 
+                                 address="via di test1, 2", 
+                                 phone_number="1231234", 
+                                 email="testhotel1@test.it", 
+                                 city="test1", 
+                                 country="test1", 
+                                 total_rooms=2, 
+                                 price_per_night=10, 
+                                 is_active=True)
+    
+    hotel2 = Hotel.objects.create(name="Test Hotel2", 
+                                 description="Hotel di test 2", 
+                                 address="via di test2, 2", 
+                                 phone_number="1231235", 
+                                 email="testhotel2@test.it", 
+                                 city="test2", 
+                                 country="test2", 
+                                 total_rooms=2, 
+                                 price_per_night=10, 
+                                 is_active=False)
+    
+    # Creo i due clients per gli utenti
+    client1 = APIClient()
+    client1.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token1)
+
+    client2 = APIClient()
+    client2.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token2)
+
+    # Recupero la lista degli hotels per l'utente superuser
+    response = client1.get('/api/hotels/')
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 2
+
+    # Recupero la lista degli hotels per l'utente guest
+    response = client2.get('/api/hotels/')
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 1
+
+
+@pytest.mark.django_db
+def test_bookings_filtering():
+    '''
+    questo test verifica che la lista delle prenotazioni e' completa se l'utente e' superuser
+    altrimenti per gli utenti guest la lista comprende solo le proprie prenotazioni
+    '''
+    # Creo tre utenti di test, due guest e uno superuser
+    user1 = User.objects.create(first_name="Test Name1", username="uno", last_name="Test Last Name1", email="user1@user.it", is_superuser=True)
+    user2 = User.objects.create(first_name="Test Name2", username="due", last_name="Test Last Name2", email="user2@user.it")
+    user3 = User.objects.create(first_name="Test Name3", username="tre", last_name="Test Last Name3", email="user3@user.it")
+    # Creo due token per gli utenti admin e guest
+    refresh1 = RefreshToken.for_user(user1)
+    access_token1 = str(refresh1.access_token)
+    refresh2 = RefreshToken.for_user(user2)
+    access_token2 = str(refresh2.access_token)
+    # Crea un hotel per le prenotazioni
+    hotel = Hotel.objects.create(name="Test Hotel", 
+                                 description="Hotel di test", 
+                                 address="via di test, 2", 
+                                 phone_number="1231234", 
+                                 email="testhotel@test.it", 
+                                 city="test", 
+                                 country="test", 
+                                 total_rooms=5, 
+                                 price_per_night=10, 
+                                 is_active=True)
+
+    # Creo i due clients per gli utenti guest e superuser
+    client1 = APIClient()
+    client1.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token1)
+
+    client2 = APIClient()
+    client2.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token2)
+
+    # Creo tre prenotazioni, una per utente guest1, una per guest2 e una per superuser
+    # Creo 3 prenotazioni per l'albergo tutte in overlap con 3 utenti diversi
+    Booking.objects.create(hotel=hotel, 
+                           user=user1, 
+                           check_in=datetime.today() + timedelta(weeks=1), 
+                           check_out=datetime.today() + timedelta(weeks=2),
+                           guests=2)
+    Booking.objects.create(hotel=hotel, 
+                           user=user2, 
+                           check_in=datetime.today() + timedelta(weeks=1), 
+                           check_out=datetime.today() + timedelta(weeks=2),
+                           guests=2)
+    Booking.objects.create(hotel=hotel, 
+                           user=user3, 
+                           check_in=datetime.today() + timedelta(weeks=1), 
+                           check_out=datetime.today() + timedelta(weeks=2),
+                           guests=2)
+
+    # Recupero la lista delle prenotazioni per l'utente superuser e mi aspetto le veda tutte
+    response = client1.get('/api/bookings/')
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 3
+
+    # Recupero la lista delle prenotazioni per l'utente guest e mi aspetto veda solo la sua
+    response = client2.get('/api/bookings/')
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 1
