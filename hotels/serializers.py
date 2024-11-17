@@ -27,7 +27,8 @@ class HotelSerializer(serializers.ModelSerializer):
         return None
 
     def update(self, instance, validated_data):
-        # Rimuovo il campo immagine se non presente nei dati inviati (per esempio in caso di modifica di altri dati)
+        # Rimuovo il campo immagine se non presente nei dati inviati
+        # (per esempio in caso di modifica di altri dati)
         if "image" not in validated_data:
             validated_data.pop("image", None)
         return super().update(instance, validated_data)
@@ -47,17 +48,13 @@ class BookingSerializer(serializers.ModelSerializer):
         return None
 
     def validate(self, data):
+        msg1 = "La data di partenza non deve essere passata."
+        msg2 = "La data di partenza deve essere successiva alla data di arrivo."
         # le date di check-in e check-out devono essere congruenti
         if data["check_in"] < timezone.now().date():
-            raise serializers.ValidationError(
-                {"check_in": "La data di partenza non deve essere passata."}
-            )
+            raise serializers.ValidationError({"check_in": msg1})
         if data["check_out"] <= data["check_in"]:
-            raise serializers.ValidationError(
-                {
-                    "check_out": "La data di partenza deve essere successiva alla data di arrivo."
-                }
-            )
+            raise serializers.ValidationError({"check_out": msg2})
         return data
 
 

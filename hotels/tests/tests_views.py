@@ -64,7 +64,8 @@ def test_update_booking_status():
 @pytest.mark.django_db
 def test_overlapping_bookings():
     """
-    questo test verifica che la validazione del booking rilevi un overlap di prenotazione
+    questo test verifica che la validazione del booking
+    rilevi un overlap di prenotazione
     per lo stesso utente nello stesso periodo
     """
     # Creo un utente di test
@@ -141,8 +142,10 @@ def test_overlapping_bookings():
 @pytest.mark.django_db
 def test_overbooking():
     """
-    questo test verifica che la validazione dei bookings rilevi un overbooking per l'hotel
-    ovvero che il numero di prenotazioni in overlap non superi il numero delle camere disponibili
+    questo test verifica che la validazione dei bookings
+    rilevi un overbooking per l'hotel
+    ovvero che il numero di prenotazioni in overlap
+    non superi il numero delle camere disponibili
     """
     # Creo tre utenti di test
     user1 = User.objects.create(
@@ -231,7 +234,8 @@ def test_overbooking():
 
     assert response.status_code == status.HTTP_200_OK
 
-    # La terza approvazione fallisce perche' l'hotel non ha piu' camere disponibili per il periodo scelto
+    # La terza approvazione fallisce perche' l'hotel non ha piu'
+    # camere disponibili per il periodo scelto
     url = reverse("booking-update-status", kwargs={"pk": prenotazione3.pk})
     data = {"status": "approved"}
     response = client3.patch(url, data, format="json")
@@ -268,7 +272,7 @@ def test_hotels_filtering():
     refresh2 = RefreshToken.for_user(user2)
     access_token2 = str(refresh2.access_token)
     # Crea due hotels di test, uno attivo e uno non attivo
-    hotel1 = Hotel.objects.create(
+    Hotel.objects.create(
         name="Test Hotel1",
         description="Hotel di test 1",
         address="via di test1, 2",
@@ -281,7 +285,7 @@ def test_hotels_filtering():
         is_active=True,
     )
 
-    hotel2 = Hotel.objects.create(
+    Hotel.objects.create(
         name="Test Hotel2",
         description="Hotel di test 2",
         address="via di test2, 2",
@@ -315,8 +319,10 @@ def test_hotels_filtering():
 @pytest.mark.django_db
 def test_bookings_filtering():
     """
-    questo test verifica che la lista delle prenotazioni e' completa se l'utente e' superuser
-    altrimenti per gli utenti guest la lista comprende solo le proprie prenotazioni
+    questo test verifica che la lista delle prenotazioni
+    e' completa se l'utente e' superuser
+    altrimenti per gli utenti guest la lista
+    comprende solo le proprie prenotazioni
     """
     # Creo tre utenti di test, due guest e uno superuser
     user1 = User.objects.create(
@@ -388,12 +394,14 @@ def test_bookings_filtering():
         guests=2,
     )
 
-    # Recupero la lista delle prenotazioni per l'utente superuser e mi aspetto le veda tutte
+    # Recupero la lista delle prenotazioni
+    # per l'utente superuser e mi aspetto le veda tutte
     response = client1.get("/api/bookings/")
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data) == 3
 
-    # Recupero la lista delle prenotazioni per l'utente guest e mi aspetto veda solo la sua
+    # Recupero la lista delle prenotazioni
+    # per l'utente guest e mi aspetto veda solo la sua
     response = client2.get("/api/bookings/")
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data) == 1

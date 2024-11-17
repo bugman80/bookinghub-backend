@@ -93,7 +93,10 @@ class Booking(models.Model):
         verbose_name_plural = "Bookings"
 
     def __str__(self):
-        return f"Booking for {self.hotel.name} by {self.user} from {self.check_in} to {self.check_out}"
+        return (
+            f"Booking for {self.hotel.name} by {self.user} "
+            f"from {self.check_in} to {self.check_out}"
+        )
 
     # Metodo per calcolare il numero di notti
     @property

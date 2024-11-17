@@ -26,9 +26,7 @@ class Command(BaseCommand):
                 )
             except IntegrityError:
                 self.stdout.write(
-                    self.style.WARNING(
-                        f"Non è stato possibile creare il superuser: potrebbe già esistere."
-                    )
+                    self.style.WARNING("Errore: il superuser potrebbe già esistere.")
                 )
         else:
             self.stdout.write(

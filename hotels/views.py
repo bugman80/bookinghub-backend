@@ -64,6 +64,8 @@ class BookingViewSet(viewsets.ModelViewSet):
         try:
             booking = self.get_object()  # Ottieni l'oggetto Booking
             new_status = request.data.get("status")
+            msg1 = "Questo utente ha una prenotazione approvata per questo periodo"
+            msg2 = "Non ci sono stanze disponibili per il periodo selezionato"
 
             # verifico che non ci sia overbooking
             if new_status == Booking.APPROVED:
@@ -72,24 +74,13 @@ class BookingViewSet(viewsets.ModelViewSet):
                     check_in__lt=booking.check_out,
                     status=Booking.APPROVED,
                 ).exclude(pk=booking.pk)
-                print(overlapping_bookings.first())
                 overlapping_bookings_for_user = overlapping_bookings.filter(
                     user=booking.user
                 )
-                print(overlapping_bookings_for_user.count())
-                print(overlapping_bookings.count())
                 if overlapping_bookings_for_user.count():
-                    raise ValidationError(
-                        {
-                            "description": "Questo utente ha una prenotazione approvata per questo periodo"
-                        }
-                    )
+                    raise ValidationError({"description": msg1})
                 if overlapping_bookings.count() >= booking.hotel.total_rooms:
-                    raise ValidationError(
-                        {
-                            "description": "Non ci sono stanze disponibili per il periodo selezionato"
-                        }
-                    )
+                    raise ValidationError({"description": msg2})
 
             booking.status = request.data.get(
                 "status", booking.status
@@ -124,7 +115,7 @@ class LogoutView(APIView):
             token = RefreshToken(refresh)
             token.blacklist()
             return Response(status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
+        except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
