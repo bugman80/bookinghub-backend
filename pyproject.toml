@@ -1,0 +1,18 @@
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+include = "\\.pyi?$"
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.pytest_cache
+  | \.venv
+  | migrations
+  | hotel-booking-frontend
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
