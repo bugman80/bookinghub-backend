@@ -58,7 +58,11 @@ CSRF_TRUSTED_ORIGINS = [
     "https://bookinghub-backend-production.up.railway.app",
 ]
 
-ALLOWED_HOSTS = ["bookinghub-x8wh.onrender.com", "bookinghub-backend-production.up.railway.app", "localhost"]
+ALLOWED_HOSTS = [
+    "bookinghub-x8wh.onrender.com",
+    "bookinghub-backend-production.up.railway.app",
+    "localhost",
+]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
