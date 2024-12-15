@@ -55,13 +55,15 @@ MIDDLEWARE = [
 
 CSRF_TRUSTED_ORIGINS = [
     "https://bookinghub-x8wh.onrender.com",
+    "https://bookinghub-backend-production.up.railway.app"
 ]
 
-ALLOWED_HOSTS = ["bookinghub-x8wh.onrender.com", "localhost"]
+ALLOWED_HOSTS = ["bookinghub-x8wh.onrender.com", "bookinghub-backend-production.up.railway.app", "localhost"]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://bookinghub-frontend.onrender.com",
+    "https://bookinghub-frontend-production.up.railway.app",
 ]
 
 ROOT_URLCONF = "bookinghub.urls"
