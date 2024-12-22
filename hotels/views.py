@@ -33,7 +33,7 @@ class HotelViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         req_user = self.request.user
         if req_user.is_superuser:
-            return self.queryset
+            return Hotel.objects.all()
         return Hotel.objects.filter(is_active=True)
 
 
@@ -49,14 +49,19 @@ class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
 
     def perform_create(self, serializer):
-        # Imposta l'utente autenticato solo in fase di creazione
+        self.validate_booking(serializer.validated_data, None)
         serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        booking = self.get_object()
+        self.validate_booking(serializer.validated_data, booking)
+        serializer.save()
 
     # Se l'utente non e' un admin ritorna solo i suoi bookings
     def get_queryset(self):
         req_user = self.request.user
         if req_user.is_superuser:
-            return self.queryset
+            return Booking.objects.all()
         return Booking.objects.filter(user=req_user)
 
     @action(detail=True, methods=["patch"])
@@ -64,27 +69,18 @@ class BookingViewSet(viewsets.ModelViewSet):
         try:
             booking = self.get_object()  # Ottieni l'oggetto Booking
             new_status = request.data.get("status")
-            msg1 = "Questo utente ha una prenotazione approvata per questo periodo"
-            msg2 = "Non ci sono stanze disponibili per il periodo selezionato"
-
-            # verifico che non ci sia overbooking
             if new_status == Booking.APPROVED:
-                overlapping_bookings = Booking.objects.filter(
-                    check_out__gt=booking.check_in,
-                    check_in__lt=booking.check_out,
-                    status=Booking.APPROVED,
-                ).exclude(pk=booking.pk)
-                overlapping_bookings_for_user = overlapping_bookings.filter(
-                    user=booking.user
+                self.validate_booking(
+                    {
+                        "status": new_status,
+                        "check_in": booking.check_in,
+                        "check_out": booking.check_out,
+                        "hotel": booking.hotel,
+                        "user": booking.user,
+                    },
+                    booking,
                 )
-                if overlapping_bookings_for_user.count():
-                    raise ValidationError({"description": msg1})
-                if overlapping_bookings.count() >= booking.hotel.total_rooms:
-                    raise ValidationError({"description": msg2})
-
-            booking.status = request.data.get(
-                "status", booking.status
-            )  # Aggiorna solo il campo status
+            booking.status = request.data.get("status", booking.status)
             booking.save()
             return Response(
                 {"message": "Status updated successfully"}, status=status.HTTP_200_OK
@@ -93,6 +89,56 @@ class BookingViewSet(viewsets.ModelViewSet):
             return Response(
                 {"error": "Booking not found"}, status=status.HTTP_404_NOT_FOUND
             )
+
+    def validate_booking(self, data, current_booking=None):
+        """
+        Metodo di validazione per evitare overbooking e conflitti.
+        """
+        check_in = data.get(
+            "check_in", current_booking.check_in if current_booking else None
+        )
+        check_out = data.get(
+            "check_out", current_booking.check_out if current_booking else None
+        )
+        hotel = data.get("hotel", current_booking.hotel if current_booking else None)
+        user = data.get(
+            "user", current_booking.user if current_booking else self.request.user
+        )
+        status = data.get("status", Booking.PENDING)
+
+        if status == Booking.APPROVED:
+            """
+            verifico che ci siano ancora stanze disponibili per il periodo scelto e l'albergo scelto
+            """
+            msg = "Non ci sono stanze disponibili per il periodo selezionato"
+
+            overlapping_bookings = Booking.objects.filter(
+                check_out__gt=check_in,
+                check_in__lt=check_out,
+                status=Booking.APPROVED,
+                hotel=hotel,
+            )
+            if current_booking:
+                overlapping_bookings = overlapping_bookings.exclude(
+                    pk=current_booking.pk
+                )
+            if overlapping_bookings.count() >= hotel.total_rooms:
+                raise ValidationError({"description": msg})
+        if status == Booking.PENDING:
+            """
+            verifico che l'utente non crei bookings in overlap a prescindere dall'albergo
+            """
+            msg = "Hai gia' una prenotazione per questo periodo"
+
+            overlapping_bookings = Booking.objects.filter(
+                check_out__gt=check_in, check_in__lt=check_out, user=user
+            ).exclude(status=Booking.REJECTED)
+            if current_booking:
+                overlapping_bookings = overlapping_bookings.exclude(
+                    pk=current_booking.pk
+                )
+            if overlapping_bookings.exists():
+                raise ValidationError({"description": msg})
 
 
 # View per la gestione dei Token

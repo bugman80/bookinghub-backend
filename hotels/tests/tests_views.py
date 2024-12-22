@@ -89,53 +89,49 @@ def test_overlapping_bookings():
         is_active=True,
     )
 
+    booking_create_url = reverse("booking-list")
     # Creo tre prenotazioni per lo stesso utente e hotel e le ultime due sono in overlap
-    prenotazione1 = Booking.objects.create(
-        hotel=hotel,
-        user=user,
-        check_in=datetime.today() + timedelta(weeks=1),
-        check_out=datetime.today() + timedelta(weeks=2),
-        guests=2,
-    )
-    prenotazione2 = Booking.objects.create(
-        hotel=hotel,
-        user=user,
-        check_in=datetime.today() + timedelta(weeks=3),
-        check_out=datetime.today() + timedelta(weeks=4),
-        guests=2,
-    )
-    prenotazione3 = Booking.objects.create(
-        hotel=hotel,
-        user=user,
-        check_in=datetime.today() + timedelta(weeks=3),
-        check_out=datetime.today() + timedelta(weeks=4),
-        guests=2,
-    )
+
+    prenotazione1 = {
+        "hotel": hotel.id,
+        "user": user.id,
+        "check_in": (datetime.today() + timedelta(weeks=1)).date().isoformat(),
+        "check_out": (datetime.today() + timedelta(weeks=2)).date().isoformat(),
+        "guests": 2,
+        "total_price": 140,
+    }
+    prenotazione2 = {
+        "hotel": hotel.id,
+        "user": user.id,
+        "check_in": (datetime.today() + timedelta(weeks=3)).date().isoformat(),
+        "check_out": (datetime.today() + timedelta(weeks=4)).date().isoformat(),
+        "guests": 2,
+        "total_price": 140,
+    }
+    prenotazione3 = {
+        "hotel": hotel.id,
+        "user": user.id,
+        "check_in": (datetime.today() + timedelta(weeks=3)).date().isoformat(),
+        "check_out": (datetime.today() + timedelta(weeks=4)).date().isoformat(),
+        "guests": 2,
+        "total_price": 140,
+    }
 
     client = APIClient()
     client.credentials(HTTP_AUTHORIZATION="Bearer " + access_token)
-    # Approvo la prima ed e' ok
-    url = reverse("booking-update-status", kwargs={"pk": prenotazione1.pk})
-    data = {"status": "approved"}
-    response = client.patch(url, data, format="json")
+    # Creo la prima ed e' ok
+    response1 = client.post(booking_create_url, prenotazione1, format="json")
+    assert response1.status_code == status.HTTP_201_CREATED
 
-    assert response.status_code == status.HTTP_200_OK
-
-    # Approvo la seconda ed e' ok
-    url = reverse("booking-update-status", kwargs={"pk": prenotazione2.pk})
-    data = {"status": "approved"}
-    response = client.patch(url, data, format="json")
-
-    assert response.status_code == status.HTTP_200_OK
+    # Creo la seconda ed e' ok
+    response2 = client.post(booking_create_url, prenotazione2, format="json")
+    assert response2.status_code == status.HTTP_201_CREATED
 
     # La terza mi rileva l'overlap e va in errore
-    url = reverse("booking-update-status", kwargs={"pk": prenotazione3.pk})
-    data = {"status": "approved"}
-    response = client.patch(url, data, format="json")
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    response3 = client.post(booking_create_url, prenotazione3, format="json")
+    assert response3.status_code == status.HTTP_400_BAD_REQUEST
     assert (
-        response.data["description"]
-        == "Questo utente ha una prenotazione approvata per questo periodo"
+        response3.data["description"] == "Hai gia' una prenotazione per questo periodo"
     )
 
 
