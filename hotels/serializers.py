@@ -1,7 +1,6 @@
-from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import serializers
-from .models import Hotel, Service, Booking
+from .models import Hotel, Service, Booking, CustomUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -77,12 +76,12 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ("username", "email", "first_name", "last_name", "password")
 
     def create(self, validated_data):
         # Crea un nuovo utente con i dati validati
-        user = User.objects.create_user(
+        user = CustomUser.objects.create_user(
             username=validated_data["username"],
             email=validated_data["email"],
             password=validated_data["password"],
@@ -94,5 +93,5 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ["id", "username", "email", "first_name", "last_name", "is_superuser"]

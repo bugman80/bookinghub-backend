@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 
@@ -106,3 +107,10 @@ class Booking(models.Model):
     def save(self, *args, **kwargs):
         self.total_price = self.nights * self.hotel.price_per_night
         super().save(*args, **kwargs)
+
+
+class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
+
+    def __str__(self):
+        return self.username

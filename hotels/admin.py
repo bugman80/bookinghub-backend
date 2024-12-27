@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Hotel, Service, Booking
+from django.contrib.auth.admin import UserAdmin
+from .models import Hotel, Service, Booking, CustomUser
 
 
 # Registrazione del modello Hotel
@@ -38,3 +39,9 @@ class BookingAdmin(admin.ModelAdmin):
     )
     search_fields = ("hotel__name", "user__username")
     list_filter = ("status", "check_in", "check_out")
+
+
+@admin.register(CustomUser)
+class CustomUserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets
+

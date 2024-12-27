@@ -3,8 +3,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.urls import reverse
-from django.contrib.auth.models import User
-from ..models import Hotel, Booking
+from ..models import Hotel, Booking, CustomUser
 from datetime import datetime, timedelta
 
 
@@ -14,7 +13,7 @@ def test_update_booking_status():
     questo test verifica un semplice scenario di approvazione di una prenotazione
     """
     # Creo un utente di test
-    user = User.objects.create(
+    user = CustomUser.objects.create(
         first_name="Test Name", last_name="Test Last Name", email="user@user.it"
     )
     # Creo un token per l'utente
@@ -69,7 +68,7 @@ def test_overlapping_bookings():
     per lo stesso utente nello stesso periodo
     """
     # Creo un utente di test
-    user = User.objects.create(
+    user = CustomUser.objects.create(
         first_name="Test Name", last_name="Test Last Name", email="user@user.it"
     )
     # Creo un token per l'utente
@@ -144,19 +143,19 @@ def test_overbooking():
     non superi il numero delle camere disponibili
     """
     # Creo tre utenti di test
-    user1 = User.objects.create(
+    user1 = CustomUser.objects.create(
         first_name="Test Name1",
         username="uno",
         last_name="Test Last Name1",
         email="user1@user.it",
     )
-    user2 = User.objects.create(
+    user2 = CustomUser.objects.create(
         first_name="Test Name2",
         username="due",
         last_name="Test Last Name2",
         email="user2@user.it",
     )
-    user3 = User.objects.create(
+    user3 = CustomUser.objects.create(
         first_name="Test Name3",
         username="tre",
         last_name="Test Last Name3",
@@ -249,14 +248,14 @@ def test_hotels_filtering():
     altrimenti per gli utenti guest la lista degli hotels comprende solo quelli attivi
     """
     # Creo due utenti di test, uno guest e uno superuser
-    user1 = User.objects.create(
+    user1 = CustomUser.objects.create(
         first_name="Test Name1",
         username="uno",
         last_name="Test Last Name1",
         email="user1@user.it",
         is_superuser=True,
     )
-    user2 = User.objects.create(
+    user2 = CustomUser.objects.create(
         first_name="Test Name2",
         username="due",
         last_name="Test Last Name2",
@@ -321,20 +320,20 @@ def test_bookings_filtering():
     comprende solo le proprie prenotazioni
     """
     # Creo tre utenti di test, due guest e uno superuser
-    user1 = User.objects.create(
+    user1 = CustomUser.objects.create(
         first_name="Test Name1",
         username="uno",
         last_name="Test Last Name1",
         email="user1@user.it",
         is_superuser=True,
     )
-    user2 = User.objects.create(
+    user2 = CustomUser.objects.create(
         first_name="Test Name2",
         username="due",
         last_name="Test Last Name2",
         email="user2@user.it",
     )
-    user3 = User.objects.create(
+    user3 = CustomUser.objects.create(
         first_name="Test Name3",
         username="tre",
         last_name="Test Last Name3",
