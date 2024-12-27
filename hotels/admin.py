@@ -44,4 +44,3 @@ class BookingAdmin(admin.ModelAdmin):
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets
-
