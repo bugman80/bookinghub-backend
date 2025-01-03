@@ -43,13 +43,13 @@ def test_update_booking_status():
     )
 
     # Verifico che la prenotazione sia in stato pending
-    assert prenotazione.status == "pending"
+    assert prenotazione.status == "verifica"
 
     client = APIClient()
     client.credentials(HTTP_AUTHORIZATION="Bearer " + access_token)
     # Approvo la prenotazione
     url = reverse("booking-update-status", kwargs={"pk": prenotazione.pk})
-    data = {"status": "approved"}
+    data = {"status": "approvata"}
     response = client.patch(url, data, format="json")
 
     # Verifico lo status code 200
@@ -57,7 +57,7 @@ def test_update_booking_status():
 
     # Verifico che lo stato ora sia approved
     prenotazione.refresh_from_db()
-    assert prenotazione.status == "approved"
+    assert prenotazione.status == "approvata"
 
 
 @pytest.mark.django_db
@@ -217,14 +217,14 @@ def test_overbooking():
 
     # Approvo la prima prenotazione con successo
     url = reverse("booking-update-status", kwargs={"pk": prenotazione1.pk})
-    data = {"status": "approved"}
+    data = {"status": "approvata"}
     response = client1.patch(url, data, format="json")
 
     assert response.status_code == status.HTTP_200_OK
 
     # Approvo la seconda prenotazione con successo
     url = reverse("booking-update-status", kwargs={"pk": prenotazione2.pk})
-    data = {"status": "approved"}
+    data = {"status": "approvata"}
     response = client2.patch(url, data, format="json")
 
     assert response.status_code == status.HTTP_200_OK
@@ -232,7 +232,7 @@ def test_overbooking():
     # La terza approvazione fallisce perche' l'hotel non ha piu'
     # camere disponibili per il periodo scelto
     url = reverse("booking-update-status", kwargs={"pk": prenotazione3.pk})
-    data = {"status": "approved"}
+    data = {"status": "approvata"}
     response = client3.patch(url, data, format="json")
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert (
