@@ -70,13 +70,13 @@ class Booking(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     # Stato della prenotazione
-    PENDING = "pending"
-    APPROVED = "approved"
-    REJECTED = "rejected"
+    PENDING = "verifica"
+    APPROVED = "approvata"
+    REJECTED = "rigettata"
     BOOKING_STATUS_CHOICES = [
-        (PENDING, "Pending"),
-        (APPROVED, "Approved"),
-        (REJECTED, "Rejected"),
+        (PENDING, "Verifica"),
+        (APPROVED, "Approvata"),
+        (REJECTED, "Rigettata"),
     ]
     status = models.CharField(
         max_length=10,

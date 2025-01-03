@@ -1,3 +1,4 @@
+from django.core.mail import send_mail
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -81,6 +82,17 @@ class BookingViewSet(viewsets.ModelViewSet):
                 )
             booking.status = request.data.get("status", booking.status)
             booking.save()
+            subject = f"""Prenotazione {new_status}"""
+            message = f"""
+            Ciao,
+
+            La tua prenotazione per l'hotel {booking.hotel} con data di check-in {booking.check_in} e data di check-out {booking.check_out} è stata {new_status}.
+
+            Cordiali saluti,
+            
+            Il team di Prenotiamo
+            """
+            send_mail(subject, message, None, [booking.user.email])
             return Response(
                 {"message": "Status updated successfully"}, status=status.HTTP_200_OK
             )

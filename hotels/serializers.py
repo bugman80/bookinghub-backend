@@ -1,3 +1,4 @@
+from django.core.mail import send_mail
 from django.utils import timezone
 from rest_framework import serializers
 from .models import Hotel, Service, Booking, CustomUser
@@ -88,6 +89,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
         )
+        subject = 'Registrazione avvenuta con successo'
+        message = 'Ciao,\n\nBenvenuto su Prenotiamo ora puoi iniziare a pianificare la tua vacanza da sogno.\n\nCordiali saluti,\nIl team di Prenotiamo'
+        send_mail(subject, message, None, [user.email])
         return user
 
 
