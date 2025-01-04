@@ -11,7 +11,7 @@ BookingHub-Backend e' una applicazione backend che espone API RESTful per la ges
 
 - [Introduzione](#introduzione)
 - [Caratteristiche](#caratteristiche)
-- [Requisiti di sistema](#requisiti-di-sistema)
+- [Prerequisiti](#prerequisiti)
 - [Installazione](#installazione)
 - [Deployment](#deployment)
 - [Licenza](#licenza)
@@ -29,7 +29,7 @@ BookingHub-Backend e' una applicazione backend che espone API RESTful per la ges
 - sistema di notifica email per gli utenti registrati utilizzando il server SMTP di Gmail
 - script per la inizializzazione del database e la creazione di un superuser
 
-## Requisiti di sistema
+## Prerequisiti
 
 - **Git**
 - **Docker**
