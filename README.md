@@ -1,8 +1,9 @@
 # BookingHub-Backend
+![Python](https://img.shields.io/badge/Python-3.11+-brightgreen)
+![Django](https://img.shields.io/badge/Django-5.1.4-brightgreen)
+![Django REST Framework](https://img.shields.io/badge/Django%20REST%20Framework-3.15.2-brightgreen)
 
-![Django REST Framework](https://img.shields.io/badge/Django%20REST%20Framework-3.12+-brightgreen)
-
-BookingHub-Backend e' una applicazione backend che espone API RESTful per gestire delle operazione CRUD di Hotels/B&B e delle relative prenotazioni
+BookingHub-Backend e' una applicazione backend che espone API RESTful per la gestione delle operazioni CRUD di Utenti, Hotels/B&B e dei relativi Servizi e Prenotazioni
 
 ---
 
@@ -10,7 +11,7 @@ BookingHub-Backend e' una applicazione backend che espone API RESTful per gestir
 
 - [Introduzione](#introduzione)
 - [Caratteristiche](#caratteristiche)
-- [Requisiti](#requisiti)
+- [Requisiti di sistema](#requisiti-di-sistema)
 - [Installazione](#installazione)
 - [Utilizzo](#utilizzo)
 - [Test](#test)
@@ -21,47 +22,64 @@ BookingHub-Backend e' una applicazione backend che espone API RESTful per gestir
 
 ## Introduzione
 
-**BookingHub-Backend** è una piattaforma backend per la prenotazione online di hotels. Questo progetto sfrutta Django REST Framework per il backend e prevede due ruoli applicativi principali guest e admin.
+**BookingHub-Backend** rappresenta la componente backend di un progetto composto da backend e frontend (https://github.com/bugman80/bookinghub-frontend), per facilitare il setup e run dell'ambiente di sviluppo e' stato creato un repository dedicato al docker-compose che consente di orchestrare entrambi i layer ed il database PostgreSQL (https://github.com/bugman80/bookinghub-dev-environment)
 
 ## Caratteristiche
 
-- API RESTful create con Django REST Framework
+- set di modelli Django per la gestione di Utenti, Hotel, Servizi e Prenotazioni
+- set di API RESTful create con Django REST Framework per le operazioni CRUD sui modelli
+- sistema di notifica email per gli utenti registrati utilizzando il server SMTP di Gmail
+- script per la inizializzazione del database e la creazione di un superuser
 
-## Requisiti
+## Requisiti di sistema
 
-- **Python** 3.12+
 - **Git**
+- **Docker**
+- **Docker-Compose**
 
 ## Installazione
 
-Segui questi passaggi per configurare l'applicazione in locale, l'hosting del codice sorgente e' su github (https://github.com/bugman80/bookinghub-backend).
+Segui questi passaggi per configurare l'applicazione in locale, questo comportera' clonare il repository backend, il repository frontend ed il repository contenente l'orchestratore dei servizi. I tre repository devono essere clonati nella stessa directory che avra' quindi la seguente struttura finale:
 
-### Clona il repository
+```
+/bookinghub-dev-environment/   # Clone del repository di orchestrazione
+|
+├── docker-compose.yml
+├── .env
+└── README.md
 
-```bash
-git clone https://github.com/username/NomeProgetto.git
-cd NomeProgetto
+/bookinghub-backend/           # Clone del repository backend
+/bookinghub-frontend/          # Clone del repository frontend
 ```
 
-### Crea un virtualenv
-
-Questo step prevede che python 3 sia installato sulla macchina, dopodiche' si puo' procedere a create un virtualenv per il progetto e ad attivarlo
+### Entra nella directory che hai scelto per contenere i tre repository di progetto
 
 ```bash
-python -m venv bookinghub_env
-source ./bookinghub_env/bin/activate
+cd CartellaDiPreferenza
 ```
-### Installa le dipendenze per python
+
+### Clona il repository backend
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/bugman80/bookinghub-backend.git
 ```
-### Crea il database, il superuser e fa partire il server di sviluppo
+
+### Clona il repository frontend
 
 ```bash
-./manage.py migrate
-./manage.py create_superuser_if_not_exists
-./manage.py runserver
+git clone https://github.com/bugman80/bookinghub-frontend.git
+```
+
+### Clona il repository di orchestrazione e avvia i servizi
+
+```bash
+git clone https://github.com/bugman80/bookinghub-dev-environment.git
+cd bookinghub-dev-environment
+```
+e' necessario ora creare il proprio file .env ed a tale scopo e' presente un file .env.example da usare come riferimento, quindi si puo' procedere ad avviare i servizi:
+
+```bash
+docker-compose up
 ```
 
 ## Utilizzo
