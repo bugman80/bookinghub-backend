@@ -20,7 +20,7 @@ BookingHub-Backend e' una applicazione backend che espone API RESTful per la ges
 
 ## Introduzione
 
-**BookingHub-Backend** rappresenta la componente backend di un progetto composto da backend e frontend (https://github.com/bugman80/bookinghub-frontend), per facilitare il setup e run dell'ambiente di sviluppo e' stato creato un repository dedicato al docker-compose che consente di orchestrare entrambi i layer ed il database PostgreSQL (https://github.com/bugman80/bookinghub-dev-environment)
+**BookingHub-Backend** rappresenta la componente backend di un progetto composto da backend e frontend (https://github.com/bugman80/bookinghub-frontend), per facilitare il setup e run dell'ambiente di sviluppo e' stato creato un repository contenente un docker-compose che consente di orchestrare entrambi i layer ed il database PostgreSQL (https://github.com/bugman80/bookinghub-dev-environment)
 
 ## Caratteristiche
 
