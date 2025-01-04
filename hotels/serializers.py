@@ -91,7 +91,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         subject = "Registrazione avvenuta con successo"
         message = "Ciao,\n\nBenvenuto su Prenotiamo ora puoi iniziare a pianificare la tua vacanza da sogno.\n\nCordiali saluti,\nIl team di Prenotiamo"
-        send_mail(subject, message, None, [user.email])
+        try:
+            send_mail(subject, message, None, [user.email])
+        except Exception:
+            pass
         return user
 
 

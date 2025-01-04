@@ -92,7 +92,10 @@ class BookingViewSet(viewsets.ModelViewSet):
             
             Il team di Prenotiamo
             """
-            send_mail(subject, message, None, [booking.user.email])
+            try:
+                send_mail(subject, message, None, [booking.user.email])
+            except Exception:
+                pass
             return Response(
                 {"message": "Status updated successfully"}, status=status.HTTP_200_OK
             )
