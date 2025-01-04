@@ -104,7 +104,7 @@ docker-compose down
 
 ## Deployment
 
-L'applicazione e' attualmente rilasciata automaticamente su Railway (https://railway.app/).
+L'applicazione e' attualmente rilasciata automaticamente su Railway (https://railway.app/) ed e' disponibile all'indirizzo https://bookinghub-frontend-production.up.railway.app/
 
 ## Licenza
 
