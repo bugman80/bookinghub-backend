@@ -81,7 +81,7 @@ Crea un file `.env` nella root di questo repository (rifacendoti a `.env.example
 Esegui il seguente comando per costruire e avviare i servizi:
 
 ```bash
-docker-compose up
+docker-compose up --build
 ```
 
 Questo comando:
