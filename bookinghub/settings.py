@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
+    'drf_yasg',
     "hotels",
 ]
 
@@ -173,3 +174,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("GMAIL_USER", "myuser")
 EMAIL_HOST_PASSWORD = os.getenv("GMAIL_PASSWORD", "mypassword")
+
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,  # Disabilita il login di Django
+}
