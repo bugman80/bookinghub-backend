@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
-    'drf_yasg',
+    "drf_yasg",
     "hotels",
 ]
 
@@ -177,5 +177,5 @@ EMAIL_HOST_PASSWORD = os.getenv("GMAIL_PASSWORD", "mypassword")
 
 
 SWAGGER_SETTINGS = {
-    'USE_SESSION_AUTH': False,  # Disabilita il login di Django
+    "USE_SESSION_AUTH": False,  # Disabilita il login di Django
 }
