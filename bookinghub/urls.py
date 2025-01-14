@@ -35,7 +35,7 @@ router.register(r"bookings", BookingViewSet)
 router.register(r"users", UserViewSet)
 
 urlpatterns = [
-    path('', lambda request: redirect('/admin/')),
+    path("", lambda request: redirect("/admin/")),
     path("api/", include(router.urls)),
     path("admin/", admin.site.urls),
     path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
