@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import path, include, re_path
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -34,6 +35,7 @@ router.register(r"bookings", BookingViewSet)
 router.register(r"users", UserViewSet)
 
 urlpatterns = [
+    path('', lambda request: redirect('/admin/')),
     path("api/", include(router.urls)),
     path("admin/", admin.site.urls),
     path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
