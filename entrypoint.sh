@@ -6,7 +6,7 @@ python manage.py wait_for_db
 # Eseguo le migrazioni
 python manage.py migrate
 
-# Eseguo il comando di gestione personalizzato
+# Eseguo il comando per la creazione iniziale dell'amministratore
 python manage.py create_superuser_if_not_exists
 
 # Avvio il server
