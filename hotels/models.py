@@ -53,9 +53,7 @@ class Booking(models.Model):
     # Riferimento all'utente che ha effettuato la prenotazione
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        on_delete=models.CASCADE,
         related_name="bookings",
     )
 
