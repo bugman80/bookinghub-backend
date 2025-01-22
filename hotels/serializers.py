@@ -41,6 +41,8 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = "__all__"
+        # il frontend alla creazione non invia lo user e setto lo user autenticato
+        extra_kwargs = {"user": {"read_only": True}}
 
     def get_user_email(self, obj):
         if obj.user:
