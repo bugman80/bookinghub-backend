@@ -1,6 +1,6 @@
 # BookingHub-Backend
 ![Python](https://img.shields.io/badge/Python-3.11+-brightgreen)
-![Django](https://img.shields.io/badge/Django-5.1.4-brightgreen)
+![Django](https://img.shields.io/badge/Django-5.1.5-brightgreen)
 ![Django REST Framework](https://img.shields.io/badge/Django%20REST%20Framework-3.15.2-brightgreen)
 
 BookingHub-Backend e' una applicazione backend che espone API RESTful per la gestione delle operazioni CRUD di Utenti, Hotels/B&B e dei relativi Servizi e Prenotazioni
