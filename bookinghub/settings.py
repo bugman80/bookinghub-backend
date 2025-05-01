@@ -61,6 +61,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 ALLOWED_HOSTS = [
     "bookinghub-backend-production.up.railway.app",
+    "bookinghub-backend-bugman80-1-dev.apps.rm2.thpm.p1.openshiftapps.com",
     "localhost",
 ]
 
