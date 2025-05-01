@@ -57,6 +57,7 @@ MIDDLEWARE = [
 
 CSRF_TRUSTED_ORIGINS = [
     "https://bookinghub-backend-production.up.railway.app",
+    "https://bookinghub-backend-bugman80-1-dev.apps.rm2.thpm.p1.openshiftapps.com",
 ]
 
 ALLOWED_HOSTS = [
