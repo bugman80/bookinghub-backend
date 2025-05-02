@@ -69,6 +69,7 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://bookinghub-frontend-production.up.railway.app",
+    "https://bookinghub-frontend-bugman80-1-dev.apps.rm2.thpm.p1.openshiftapps.com",
 ]
 
 ROOT_URLCONF = "bookinghub.urls"
